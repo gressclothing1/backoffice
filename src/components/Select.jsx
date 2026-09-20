@@ -1,9 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import './Select.css';
 
-export default function Select({ value, onChange, options, placeholder = 'Elegir…', disabled = false }) {
+export default function Select({
+  value,
+  onChange,
+  options,
+  placeholder = 'Elegir…',
+  disabled = false,
+  searchable = false
+}) {
   const [abierto, setAbierto] = useState(false);
+  const [busqueda, setBusqueda] = useState('');
   const rootRef = useRef(null);
+  const buscarRef = useRef(null);
 
   useEffect(() => {
     if (!abierto) return;
@@ -21,10 +30,22 @@ export default function Select({ value, onChange, options, placeholder = 'Elegir
     };
   }, [abierto]);
 
+  useEffect(() => {
+    if (abierto) {
+      setBusqueda('');
+      if (searchable) requestAnimationFrame(() => buscarRef.current?.focus());
+    }
+  }, [abierto, searchable]);
+
   function elegir(opcion) {
     onChange(opcion);
     setAbierto(false);
   }
+
+  const opcionesFiltradas =
+    searchable && busqueda.trim()
+      ? options.filter((o) => o.toLowerCase().includes(busqueda.trim().toLowerCase()))
+      : options;
 
   return (
     <div className="custom-select" ref={rootRef}>
@@ -43,19 +64,32 @@ export default function Select({ value, onChange, options, placeholder = 'Elegir
       </button>
 
       {abierto && (
-        <ul className="custom-select-options" role="listbox">
-          {options.map((opcion) => (
-            <li
-              key={opcion}
-              role="option"
-              aria-selected={opcion === value}
-              className={`custom-select-option ${opcion === value ? 'seleccionada' : ''}`}
-              onClick={() => elegir(opcion)}
-            >
-              {opcion}
-            </li>
-          ))}
-        </ul>
+        <div className="custom-select-dropdown">
+          {searchable && (
+            <input
+              ref={buscarRef}
+              type="text"
+              className="custom-select-buscar"
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              placeholder="Buscar…"
+            />
+          )}
+          <ul className="custom-select-options" role="listbox">
+            {opcionesFiltradas.length === 0 && <li className="custom-select-sin-resultados">Sin resultados</li>}
+            {opcionesFiltradas.map((opcion) => (
+              <li
+                key={opcion}
+                role="option"
+                aria-selected={opcion === value}
+                className={`custom-select-option ${opcion === value ? 'seleccionada' : ''}`}
+                onClick={() => elegir(opcion)}
+              >
+                {opcion}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );

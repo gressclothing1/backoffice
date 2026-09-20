@@ -1,8 +1,10 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { updateProducto } from '../../lib/api';
 import EliminarProductoModal from './EliminarProductoModal';
 import StockPopover from './StockPopover';
 import './ProductosTable.css';
+
+const POR_PAGINA = 8;
 
 function filtrar(productos, filtros) {
   return productos.filter((p) => {
@@ -26,7 +28,12 @@ export default function ProductosTable({
   const [editandoStockId, setEditandoStockId] = useState(null);
   const [guardandoStock, setGuardandoStock] = useState(false);
   const [errorStock, setErrorStock] = useState(null);
+  const [pagina, setPagina] = useState(1);
   const anchorStockRef = useRef(null);
+
+  useEffect(() => {
+    setPagina(1);
+  }, [filtros]);
 
   function onEliminado() {
     setProductoAEliminar(null);
@@ -75,6 +82,9 @@ export default function ProductosTable({
   const hayFiltrosActivos = Boolean(filtros.categoria || filtros.nombre || filtros.talle || filtros.color);
   const productosFiltrados = filtrar(productos, filtros);
   const ocultarProducto = Boolean(filtros.nombre);
+  const totalPaginas = Math.max(1, Math.ceil(productosFiltrados.length / POR_PAGINA));
+  const paginaSegura = Math.min(pagina, totalPaginas);
+  const productosPagina = productosFiltrados.slice((paginaSegura - 1) * POR_PAGINA, paginaSegura * POR_PAGINA);
 
   if (!productos.length || (hayFiltrosActivos && !productosFiltrados.length)) {
     return (
@@ -97,7 +107,8 @@ export default function ProductosTable({
   }
 
   return (
-    <div className="table-wrap">
+    <div>
+      <div className="table-wrap">
       <table className="table-productos">
         <colgroup>
           {!ocultarProducto && <col style={{ width: '130px' }} />}
@@ -116,7 +127,7 @@ export default function ProductosTable({
           </tr>
         </thead>
         <tbody>
-          {productosFiltrados.map((producto) => (
+          {productosPagina.map((producto) => (
             <tr key={producto.id}>
               {!ocultarProducto && (
                 <td>
@@ -188,6 +199,29 @@ export default function ProductosTable({
           ))}
         </tbody>
       </table>
+      </div>
+
+      {totalPaginas > 1 && (
+        <div className="paginador">
+          <button
+            type="button"
+            onClick={() => setPagina((p) => Math.max(1, p - 1))}
+            disabled={paginaSegura === 1}
+          >
+            Anterior
+          </button>
+          <span className="paginador-info">
+            Página {paginaSegura} de {totalPaginas}
+          </span>
+          <button
+            type="button"
+            onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
+            disabled={paginaSegura === totalPaginas}
+          >
+            Siguiente
+          </button>
+        </div>
+      )}
 
       {productoAEliminar && (
         <EliminarProductoModal

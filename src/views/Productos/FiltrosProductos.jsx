@@ -97,11 +97,21 @@ export default function FiltrosProductos({ productos, filtros, onChange }) {
         <div className="filtros-panel">
           <div className="filtro-campo">
             Categoría
-            <Select value={categoria || TODOS} onChange={actualizarCategoria} options={[TODOS, ...CATEGORIAS]} />
+            <Select
+              value={categoria || TODOS}
+              onChange={actualizarCategoria}
+              options={[TODOS, ...CATEGORIAS]}
+              searchable
+            />
           </div>
           <div className="filtro-campo">
             Nombre
-            <Select value={nombre || TODOS} onChange={actualizarNombre} options={[TODOS, ...nombresDisponibles]} />
+            <Select
+              value={nombre || TODOS}
+              onChange={actualizarNombre}
+              options={[TODOS, ...nombresDisponibles]}
+              searchable
+            />
           </div>
           <div className="filtro-campo">
             Talle
@@ -110,6 +120,7 @@ export default function FiltrosProductos({ productos, filtros, onChange }) {
               onChange={(v) => setTalle(v === TODOS ? '' : v)}
               options={[TODOS, ...tallesDisponibles]}
               disabled={!hayNombre}
+              searchable
             />
           </div>
           <div className="filtro-campo">
@@ -119,6 +130,7 @@ export default function FiltrosProductos({ productos, filtros, onChange }) {
               onChange={(v) => setColor(v === TODOS ? '' : v)}
               options={[TODOS, ...coloresDisponibles]}
               disabled={!hayNombre}
+              searchable
             />
           </div>
           <button type="button" className="btn-aplicar-filtros" onClick={aplicar}>

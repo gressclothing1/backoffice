@@ -16,6 +16,41 @@
   line-height: 1.4;
 }
 
+.paginador {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.paginador button {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  cursor: pointer;
+}
+
+.paginador button:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
+.paginador button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.paginador-info {
+  font-size: 14px;
+  color: var(--text);
+}
+
 .table-productos {
   table-layout: fixed;
   min-width: 380px;
@@ -54,6 +89,7 @@ th.col-sticky-acciones {
   display: flex;
   align-items: center;
   gap: 4px;
+  font-weight: 700;
 }
 
 .btn-icono-mini {
