@@ -34,3 +34,14 @@ export function getClientes() {
 export function createProducto(producto) {
   return requestJson('POST', 'productos', producto);
 }
+
+export function createImagen(imagen) {
+  return requestJson('POST', 'imagenes', imagen);
+}
+
+export async function uploadImagen(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const { url } = await request('uploads/imagen', { method: 'POST', body: formData });
+  return url;
+}

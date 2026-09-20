@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { createProducto } from '../../lib/api';
+import { createProducto, createImagen, uploadImagen } from '../../lib/api';
 import Select from '../../components/Select';
 import './ProductoForm.css';
 
 const TALLES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 const CATEGORIAS = ['Pantalón', 'Blusa', 'Vestido', 'Remera'];
+const MAX_IMAGENES = 6;
 
 const VACIO = { nombre: '', categoria: '' };
 
@@ -14,6 +15,7 @@ export default function ProductoForm({ onCreated, onCancelar }) {
   const [medidasPorTalle, setMedidasPorTalle] = useState({});
   const [colores, setColores] = useState([]);
   const [colorInput, setColorInput] = useState('');
+  const [imagenesPorColor, setImagenesPorColor] = useState({});
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
   const [exito, setExito] = useState(null);
@@ -41,11 +43,17 @@ export default function ProductoForm({ onCreated, onCancelar }) {
     const color = colorInput.trim();
     if (!color) return;
     setColores((c) => (c.includes(color) ? c : [...c, color]));
+    setImagenesPorColor((m) => (color in m ? m : { ...m, [color]: [] }));
     setColorInput('');
   }
 
   function quitarColor(color) {
     setColores((c) => c.filter((x) => x !== color));
+    setImagenesPorColor((m) => {
+      const { [color]: quitadas, ...resto } = m;
+      quitadas?.forEach((imagen) => URL.revokeObjectURL(imagen.previewUrl));
+      return resto;
+    });
   }
 
   function onColorKeyDown(e) {
@@ -53,6 +61,23 @@ export default function ProductoForm({ onCreated, onCancelar }) {
       e.preventDefault();
       agregarColor();
     }
+  }
+
+  function agregarImagenesColor(color, fileList) {
+    const actuales = imagenesPorColor[color] || [];
+    const nuevas = Array.from(fileList)
+      .slice(0, MAX_IMAGENES - actuales.length)
+      .map((file) => ({ file, previewUrl: URL.createObjectURL(file) }));
+    setImagenesPorColor((m) => ({ ...m, [color]: [...actuales, ...nuevas] }));
+  }
+
+  function quitarImagenColor(color, index) {
+    setImagenesPorColor((m) => {
+      const lista = [...(m[color] || [])];
+      const [quitada] = lista.splice(index, 1);
+      if (quitada) URL.revokeObjectURL(quitada.previewUrl);
+      return { ...m, [color]: lista };
+    });
   }
 
   async function onSubmit(e) {
@@ -78,14 +103,37 @@ export default function ProductoForm({ onCreated, onCancelar }) {
       const combinaciones = talles.flatMap((talle) =>
         colores.map((color) => ({ ...base, talle, medidas: medidasPorTalle[talle].trim(), color }))
       );
-      await Promise.all(combinaciones.map((producto) => createProducto(producto)));
+      const productosCreados = await Promise.all(combinaciones.map((producto) => createProducto(producto)));
+
+      const coloresConImagenes = colores.filter((color) => (imagenesPorColor[color]?.length || 0) > 0);
+      if (coloresConImagenes.length > 0) {
+        const urlsPorColor = {};
+        await Promise.all(
+          coloresConImagenes.map(async (color) => {
+            urlsPorColor[color] = await Promise.all(imagenesPorColor[color].map((imagen) => uploadImagen(imagen.file)));
+          })
+        );
+        const registrosImagenes = productosCreados
+          .filter((producto) => urlsPorColor[producto.color])
+          .flatMap((producto) =>
+            urlsPorColor[producto.color].map((url, index) => ({
+              productoId: producto.id,
+              url,
+              orden: index,
+              principal: index === 0
+            }))
+          );
+        await Promise.all(registrosImagenes.map((imagen) => createImagen(imagen)));
+      }
 
       setValores(VACIO);
       setTalles([]);
       setMedidasPorTalle({});
       setColores([]);
+      Object.values(imagenesPorColor).flat().forEach((imagen) => URL.revokeObjectURL(imagen.previewUrl));
+      setImagenesPorColor({});
       setExito(`Se ${combinaciones.length === 1 ? 'creó 1 variante' : `crearon ${combinaciones.length} variantes`}.`);
-      onCreated?.();
+      setTimeout(() => onCreated?.(), 1200);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -167,6 +215,47 @@ export default function ProductoForm({ onCreated, onCancelar }) {
                 </button>
               </span>
             ))}
+          </div>
+        )}
+        {colores.length > 0 && (
+          <div className="imagenes-por-color">
+            {colores.map((color) => {
+              const imagenesColor = imagenesPorColor[color] || [];
+              return (
+                <div key={color} className="color-imagenes-bloque">
+                  <span className="form-field-label">
+                    Fotos para {color} (hasta {MAX_IMAGENES})
+                  </span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="imagenes-input"
+                    onChange={(e) => {
+                      agregarImagenesColor(color, e.target.files);
+                      e.target.value = '';
+                    }}
+                    disabled={imagenesColor.length >= MAX_IMAGENES}
+                  />
+                  {imagenesColor.length > 0 && (
+                    <div className="imagenes-preview">
+                      {imagenesColor.map((imagen, index) => (
+                        <div className="imagen-preview" key={imagen.previewUrl}>
+                          <img src={imagen.previewUrl} alt="" />
+                          <button
+                            type="button"
+                            onClick={() => quitarImagenColor(color, index)}
+                            aria-label={`Quitar foto de ${color}`}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
