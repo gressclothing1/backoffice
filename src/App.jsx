@@ -42,7 +42,6 @@ function App() {
 
         {tab === 'productos' && (
           <section className="panel">
-            <h2>Productos</h2>
             <ProductosView />
           </section>
         )}

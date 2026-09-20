@@ -17,8 +17,9 @@
 
 .producto-form-header h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: 21px;
   color: var(--text-h);
+  font-weight: 500;
 }
 
 .btn-cerrar-form {
@@ -31,7 +32,7 @@
   border-radius: 8px;
   background: transparent;
   color: var(--text);
-  font-size: 22px;
+  font-size: 26px;
   line-height: 1;
   cursor: pointer;
 }
