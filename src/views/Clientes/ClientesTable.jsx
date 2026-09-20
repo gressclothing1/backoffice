@@ -1,5 +1,5 @@
-import { getClientes } from './api';
-import { useFetch } from './useFetch';
+import { getClientes } from '../../lib/api';
+import { useFetch } from '../../hooks/useFetch';
 
 export default function ClientesTable({ refreshKey }) {
   const { data: clientes, error, loading } = useFetch(getClientes, [refreshKey]);

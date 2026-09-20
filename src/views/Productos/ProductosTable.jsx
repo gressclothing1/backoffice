@@ -1,5 +1,5 @@
-import { getProductos } from './api';
-import { useFetch } from './useFetch';
+import { getProductos } from '../../lib/api';
+import { useFetch } from '../../hooks/useFetch';
 
 function agruparPorNombre(productos) {
   const grupos = new Map();

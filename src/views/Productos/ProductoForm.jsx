@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { createProducto } from './api';
+import { createProducto } from '../../lib/api';
+import Select from '../../components/Select';
+import './ProductoForm.css';
 
 const TALLES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 const CATEGORIAS = ['Pantalón', 'Blusa', 'Vestido', 'Remera'];
@@ -58,6 +60,7 @@ export default function ProductoForm({ onCreated }) {
     setError(null);
     setExito(null);
 
+    if (!valores.categoria) { setError('Elegí una categoría.'); return; }
     if (talles.length === 0) { setError('Elegí al menos un talle.'); return; }
     if (colores.length === 0) { setError('Agregá al menos un color.'); return; }
     if (talles.some((talle) => !medidasPorTalle[talle]?.trim())) {
@@ -93,7 +96,7 @@ export default function ProductoForm({ onCreated }) {
   return (
     <form className="producto-form" onSubmit={onSubmit}>
       <div className="form-grid">
-        <label>
+        <label className="field">
           Nombre
           <input
             value={valores.nombre}
@@ -101,23 +104,14 @@ export default function ProductoForm({ onCreated }) {
             required
           />
         </label>
-        <label>
+        <div className="field">
           Categoría
-          <select
+          <Select
             value={valores.categoria}
-            onChange={(e) => actualizarCampo('categoria', e.target.value)}
-            required
-          >
-            <option value="" disabled>
-              Elegir…
-            </option>
-            {CATEGORIAS.map((categoria) => (
-              <option key={categoria} value={categoria}>
-                {categoria}
-              </option>
-            ))}
-          </select>
-        </label>
+            onChange={(categoria) => actualizarCampo('categoria', categoria)}
+            options={CATEGORIAS}
+          />
+        </div>
       </div>
 
       <div className="form-field">

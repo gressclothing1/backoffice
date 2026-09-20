@@ -1,5 +1,5 @@
-import { getClientes, getEnvios } from './api';
-import { useFetch } from './useFetch';
+import { getClientes, getEnvios } from '../../lib/api';
+import { useFetch } from '../../hooks/useFetch';
 
 const ESTADO_LABELS = {
   pendiente: 'Pendiente',

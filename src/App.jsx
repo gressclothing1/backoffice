@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import EnviosTable from './EnviosTable';
-import ProductosTable from './ProductosTable';
-import ProductoForm from './ProductoForm';
-import ClientesTable from './ClientesTable';
+import EnviosTable from './views/Envios/EnviosTable';
+import ProductosTable from './views/Productos/ProductosTable';
+import ProductoForm from './views/Productos/ProductoForm';
+import ClientesTable from './views/Clientes/ClientesTable';
 import './App.css';
 
 const TABS = [
