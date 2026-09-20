@@ -12,17 +12,34 @@ function valoresDeVariante(producto) {
   return { nombre: producto.nombre, categoria: producto.categoria, material: producto.material || '' };
 }
 
+function datosParaModo(productoEditando, variantesDelProducto, modo) {
+  if (!productoEditando) return { talles: [], medidas: {}, colores: [], imagenes: {} };
+  if (modo === 'variante') {
+    return {
+      talles: [productoEditando.talle],
+      medidas: { [productoEditando.talle]: productoEditando.medidas },
+      colores: [productoEditando.color],
+      imagenes: { [productoEditando.color]: [] }
+    };
+  }
+  const tallesUnicos = [...new Set(variantesDelProducto.map((v) => v.talle))];
+  const coloresUnicos = [...new Set(variantesDelProducto.map((v) => v.color))];
+  const medidas = {};
+  variantesDelProducto.forEach((v) => { medidas[v.talle] = v.medidas; });
+  return { talles: tallesUnicos, medidas, colores: coloresUnicos, imagenes: Object.fromEntries(coloresUnicos.map((c) => [c, []])) };
+}
+
 export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, productoEditando, variantesDelProducto = [] }) {
-  const [modoEdicion, setModoEdicion] = useState('variante');
+  const [modoEdicion, setModoEdicion] = useState('producto');
   const [valores, setValores] = useState(() => (productoEditando ? valoresDeVariante(productoEditando) : VACIO));
-  const [talles, setTalles] = useState(() => (productoEditando ? [productoEditando.talle] : []));
-  const [medidasPorTalle, setMedidasPorTalle] = useState(() =>
-    productoEditando ? { [productoEditando.talle]: productoEditando.medidas } : {}
+  const [talles, setTalles] = useState(() => datosParaModo(productoEditando, variantesDelProducto, 'producto').talles);
+  const [medidasPorTalle, setMedidasPorTalle] = useState(
+    () => datosParaModo(productoEditando, variantesDelProducto, 'producto').medidas
   );
-  const [colores, setColores] = useState(() => (productoEditando ? [productoEditando.color] : []));
+  const [colores, setColores] = useState(() => datosParaModo(productoEditando, variantesDelProducto, 'producto').colores);
   const [colorInput, setColorInput] = useState('');
-  const [imagenesPorColor, setImagenesPorColor] = useState(() =>
-    productoEditando ? { [productoEditando.color]: [] } : {}
+  const [imagenesPorColor, setImagenesPorColor] = useState(
+    () => datosParaModo(productoEditando, variantesDelProducto, 'producto').imagenes
   );
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
@@ -32,23 +49,11 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
     if (modo === modoEdicion || !productoEditando) return;
     setModoEdicion(modo);
     setValores(valoresDeVariante(productoEditando));
-
-    if (modo === 'variante') {
-      setTalles([productoEditando.talle]);
-      setMedidasPorTalle({ [productoEditando.talle]: productoEditando.medidas });
-      setColores([productoEditando.color]);
-      setImagenesPorColor({ [productoEditando.color]: [] });
-      return;
-    }
-
-    const tallesUnicos = [...new Set(variantesDelProducto.map((v) => v.talle))];
-    const coloresUnicos = [...new Set(variantesDelProducto.map((v) => v.color))];
-    const medidas = {};
-    variantesDelProducto.forEach((v) => { medidas[v.talle] = v.medidas; });
-    setTalles(tallesUnicos);
-    setMedidasPorTalle(medidas);
-    setColores(coloresUnicos);
-    setImagenesPorColor(Object.fromEntries(coloresUnicos.map((c) => [c, []])));
+    const datos = datosParaModo(productoEditando, variantesDelProducto, modo);
+    setTalles(datos.talles);
+    setMedidasPorTalle(datos.medidas);
+    setColores(datos.colores);
+    setImagenesPorColor(datos.imagenes);
   }
 
   function actualizarCampo(campo, valor) {
@@ -222,17 +227,17 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
       )}
 
       {productoEditando && (
-        <div className="modo-edicion-chips">
+        <div className="modo-edicion-tabs">
           <button
             type="button"
-            className={`chip-toggle ${modoEdicion === 'variante' ? 'activo' : ''}`}
+            className={`modo-edicion-tab ${modoEdicion === 'variante' ? 'activo' : ''}`}
             onClick={() => cambiarModoEdicion('variante')}
           >
             Variante
           </button>
           <button
             type="button"
-            className={`chip-toggle ${modoEdicion === 'producto' ? 'activo' : ''}`}
+            className={`modo-edicion-tab ${modoEdicion === 'producto' ? 'activo' : ''}`}
             onClick={() => cambiarModoEdicion('producto')}
           >
             Producto
@@ -240,32 +245,34 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
         </div>
       )}
 
-      <div className="form-grid">
-        <label className="field">
-          Nombre
-          <input
-            value={valores.nombre}
-            onChange={(e) => actualizarCampo('nombre', e.target.value)}
-            required
-          />
-        </label>
-        <div className="field">
-          Categoría
-          <Select
-            value={valores.categoria}
-            onChange={(categoria) => actualizarCampo('categoria', categoria)}
-            options={CATEGORIAS}
-          />
+      {!(productoEditando && modoEdicion === 'variante') && (
+        <div className="form-grid">
+          <label className="field">
+            Nombre
+            <input
+              value={valores.nombre}
+              onChange={(e) => actualizarCampo('nombre', e.target.value)}
+              required
+            />
+          </label>
+          <div className="field">
+            Categoría
+            <Select
+              value={valores.categoria}
+              onChange={(categoria) => actualizarCampo('categoria', categoria)}
+              options={CATEGORIAS}
+            />
+          </div>
+          <label className="field">
+            Material
+            <input
+              value={valores.material}
+              onChange={(e) => actualizarCampo('material', e.target.value)}
+              required
+            />
+          </label>
         </div>
-        <label className="field">
-          Material
-          <input
-            value={valores.material}
-            onChange={(e) => actualizarCampo('material', e.target.value)}
-            required
-          />
-        </label>
-      </div>
+      )}
 
       <div className="form-field">
         <span className="form-field-label">Talles</span>

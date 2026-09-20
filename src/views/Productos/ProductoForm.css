@@ -22,11 +22,33 @@
   font-weight: 500;
 }
 
-.modo-edicion-chips {
+.modo-edicion-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
+  justify-content: center;
+  width: fit-content;
+  margin: 0 auto 16px;
+  padding: 4px;
+  gap: 4px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+}
+
+.modo-edicion-tab {
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.modo-edicion-tab.activo {
+  background: var(--accent-bg);
+  color: var(--accent);
 }
 
 .btn-cerrar-form {

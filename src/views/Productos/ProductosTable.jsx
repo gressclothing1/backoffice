@@ -112,7 +112,7 @@ export default function ProductosTable({
       <table className="table-productos">
         <colgroup>
           {!ocultarProducto && <col style={{ width: '130px' }} />}
-          <col style={{ width: '70px' }} />
+          <col style={{ width: '92px' }} />
           <col style={{ width: '90px' }} />
           <col style={{ width: '80px' }} />
           <col style={{ width: '104px' }} />
