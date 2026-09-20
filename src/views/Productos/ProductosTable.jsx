@@ -205,20 +205,24 @@ export default function ProductosTable({
         <div className="paginador">
           <button
             type="button"
+            className="paginador-flecha"
             onClick={() => setPagina((p) => Math.max(1, p - 1))}
             disabled={paginaSegura === 1}
+            aria-label="Página anterior"
           >
-            Anterior
+            ‹
           </button>
           <span className="paginador-info">
             Página {paginaSegura} de {totalPaginas}
           </span>
           <button
             type="button"
+            className="paginador-flecha"
             onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
             disabled={paginaSegura === totalPaginas}
+            aria-label="Página siguiente"
           >
-            Siguiente
+            ›
           </button>
         </div>
       )}
