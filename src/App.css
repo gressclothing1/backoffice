@@ -172,8 +172,8 @@ a {
 
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 12px;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
 .form-grid label {
@@ -205,7 +205,7 @@ a {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-top: 14px;
+  margin-top: 24px;
 }
 
 .form-field-label {
@@ -223,17 +223,17 @@ a {
   font: inherit;
   font-size: 14px;
   padding: 6px 14px;
-  border: 1px solid var(--accent-border);
+  border: 1px solid var(--border);
   border-radius: 999px;
-  background: var(--accent-bg);
-  color: var(--accent);
+  background: var(--bg);
+  color: var(--text-h);
   cursor: pointer;
 }
 
 .chip-toggle.activo {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #fff;
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent);
 }
 
 .medidas-por-talle {
@@ -336,7 +336,7 @@ a {
   flex-direction: column;
   align-items: stretch;
   gap: 8px;
-  margin-top: 14px;
+  margin-top: 28px;
 }
 
 .form-actions button {
@@ -344,10 +344,10 @@ a {
   font-size: 15px;
   padding: 9px 16px;
   width: 100%;
-  border: 1px solid var(--accent-border);
+  border: none;
   border-radius: 6px;
-  background: var(--accent-bg);
-  color: var(--accent);
+  background: var(--accent);
+  color: #fff;
   cursor: pointer;
 }
 
