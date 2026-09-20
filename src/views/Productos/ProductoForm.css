@@ -6,6 +6,41 @@
   background: var(--code-bg);
 }
 
+.producto-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.producto-form-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text-h);
+}
+
+.btn-cerrar-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.btn-cerrar-form:hover {
+  background: var(--bg);
+  color: var(--text-h);
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -45,7 +80,7 @@
   gap: 6px;
   margin-top: 28px;
   padding-top: 24px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border-strong);
 }
 
 .form-field-label {

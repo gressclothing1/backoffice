@@ -17,17 +17,7 @@ export default function ProductosView() {
   }
 
   if (mostrarForm) {
-    return (
-      <div className="productos-form-screen">
-        <div className="productos-form-screen-header">
-          <h3>Nuevo producto</h3>
-          <button type="button" className="btn-cerrar-form" onClick={cerrarForm} aria-label="Cerrar">
-            ×
-          </button>
-        </div>
-        <ProductoForm onCreated={onCreated} onCancelar={cerrarForm} />
-      </div>
-    );
+    return <ProductoForm titulo="Nuevo producto" onCerrar={cerrarForm} onCreated={onCreated} onCancelar={cerrarForm} />;
   }
 
   return (

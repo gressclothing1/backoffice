@@ -9,7 +9,7 @@ const MAX_IMAGENES = 6;
 
 const VACIO = { nombre: '', categoria: '' };
 
-export default function ProductoForm({ onCreated, onCancelar }) {
+export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar }) {
   const [valores, setValores] = useState(VACIO);
   const [talles, setTalles] = useState([]);
   const [medidasPorTalle, setMedidasPorTalle] = useState({});
@@ -143,6 +143,17 @@ export default function ProductoForm({ onCreated, onCancelar }) {
 
   return (
     <form className="producto-form" onSubmit={onSubmit}>
+      {(titulo || onCerrar) && (
+        <div className="producto-form-header">
+          <h3>{titulo}</h3>
+          {onCerrar && (
+            <button type="button" className="btn-cerrar-form" onClick={onCerrar} aria-label="Cerrar">
+              ×
+            </button>
+          )}
+        </div>
+      )}
+
       <div className="form-grid">
         <label className="field">
           Nombre
