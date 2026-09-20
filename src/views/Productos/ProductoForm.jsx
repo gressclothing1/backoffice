@@ -228,14 +228,14 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
             className={`chip-toggle ${modoEdicion === 'variante' ? 'activo' : ''}`}
             onClick={() => cambiarModoEdicion('variante')}
           >
-            Modificar variante
+            Variante
           </button>
           <button
             type="button"
             className={`chip-toggle ${modoEdicion === 'producto' ? 'activo' : ''}`}
             onClick={() => cambiarModoEdicion('producto')}
           >
-            Modificar producto entero
+            Producto
           </button>
         </div>
       )}
