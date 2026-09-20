@@ -27,38 +27,41 @@ th.col-sticky-acciones {
 
 .col-sticky-acciones {
   right: 0;
-  width: 84px;
+  width: 104px;
 }
 
 .col-sticky-stock {
-  right: 84px;
+  right: 104px;
   box-shadow: -6px 0 6px -6px rgba(0, 0, 0, 0.15);
 }
 
 .fila-acciones {
   display: flex;
-  gap: 4px;
+  gap: 6px;
 }
 
 .btn-icono {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--text);
+  border-radius: 8px;
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
   cursor: pointer;
 }
 
 .btn-icono:hover {
-  background: var(--accent-bg);
-  color: var(--accent);
+  background: rgba(37, 99, 235, 0.22);
+}
+
+.btn-icono-eliminar {
+  background: rgba(209, 67, 91, 0.12);
+  color: #d1435b;
 }
 
 .btn-icono-eliminar:hover {
-  background: rgba(209, 67, 91, 0.12);
-  color: #d1435b;
+  background: rgba(209, 67, 91, 0.22);
 }

@@ -35,10 +35,10 @@ export default function EliminarProductoModal({ producto, variantesDelMismoNombr
       <div className="modal-box" onClick={(e) => e.stopPropagation()}>
         <h3>Eliminar producto</h3>
         <p>
-          "{producto.nombre}" tiene {variantesDelMismoNombre.length}{' '}
+          {producto.categoria} {producto.nombre} tiene {variantesDelMismoNombre.length}{' '}
           {variantesDelMismoNombre.length === 1 ? 'variante' : 'variantes'} de talle y color. Elegí si querés eliminar
-          únicamente esta variante (<strong>{producto.talle} · {producto.color}</strong>) o todas las variantes de "
-          {producto.nombre}".
+          únicamente esta variante (<strong>{producto.talle} · {producto.color}</strong>) o todas las variantes de{' '}
+          {producto.categoria} {producto.nombre}.
         </p>
 
         {error && <p className="status error">{error}</p>}
