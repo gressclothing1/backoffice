@@ -10,3 +10,36 @@
   color: #fff;
   cursor: pointer;
 }
+
+.productos-form-screen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.productos-form-screen-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text-h);
+}
+
+.btn-cerrar-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.btn-cerrar-form:hover {
+  background: var(--code-bg);
+  color: var(--text-h);
+}
