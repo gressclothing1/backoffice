@@ -258,7 +258,7 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
               return (
                 <div key={color} className="color-imagenes-bloque">
                   <span className="form-field-label">
-                    Fotos para {color} (hasta {MAX_IMAGENES})
+                    Fotos para color {color} (hasta {MAX_IMAGENES})
                   </span>
                   <input
                     type="file"
