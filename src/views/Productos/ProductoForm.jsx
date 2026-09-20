@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { createProducto, updateProducto, createImagen, uploadImagen } from '../../lib/api';
+import { TALLES, CATEGORIAS } from '../../lib/constants';
 import Select from '../../components/Select';
 import './ProductoForm.css';
 
-const TALLES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
-const CATEGORIAS = ['Pantalón', 'Blusa', 'Vestido', 'Remera'];
 const MAX_IMAGENES = 6;
 
 const VACIO = { nombre: '', categoria: '' };

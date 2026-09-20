@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import ProductoForm from './ProductoForm';
 import ProductosTable from './ProductosTable';
+import FiltrosProductos from './FiltrosProductos';
 import './ProductosView.css';
 
 export default function ProductosView() {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [filtros, setFiltros] = useState({ producto: '', talle: '', color: '' });
 
   function cerrarForm() {
     setMostrarForm(false);
@@ -38,10 +40,13 @@ export default function ProductosView() {
   return (
     <div>
       <h2>Productos</h2>
-      <button type="button" className="btn-crear-producto" onClick={() => setMostrarForm(true)}>
-        + Crear producto
-      </button>
-      <ProductosTable refreshKey={refreshKey} onEditar={editar} />
+      <div className="productos-toolbar">
+        <button type="button" className="btn-crear-producto" onClick={() => setMostrarForm(true)}>
+          + Crear producto
+        </button>
+        <FiltrosProductos onChange={setFiltros} />
+      </div>
+      <ProductosTable refreshKey={refreshKey} onEditar={editar} filtros={filtros} />
     </div>
   );
 }

@@ -15,7 +15,18 @@ function fetchProductosOrdenados() {
   return getProductos().then(ordenar);
 }
 
-export default function ProductosTable({ refreshKey, onEditar }) {
+function filtrar(productos, filtros) {
+  const producto = filtros.producto.trim().toLowerCase();
+  const color = filtros.color.trim().toLowerCase();
+  return productos.filter((p) => {
+    if (producto && !`${p.categoria} ${p.nombre}`.toLowerCase().includes(producto)) return false;
+    if (filtros.talle && p.talle !== filtros.talle) return false;
+    if (color && !p.color.toLowerCase().includes(color)) return false;
+    return true;
+  });
+}
+
+export default function ProductosTable({ refreshKey, onEditar, filtros = { producto: '', talle: '', color: '' } }) {
   const [localRefresh, setLocalRefresh] = useState(0);
   const [productoAEliminar, setProductoAEliminar] = useState(null);
   const [editandoStockId, setEditandoStockId] = useState(null);
@@ -67,7 +78,11 @@ export default function ProductosTable({ refreshKey, onEditar }) {
 
   if (loading) return <p className="status">Cargando productos…</p>;
   if (error) return <p className="status error">Error al cargar productos: {error}</p>;
-  if (!productos.length) {
+
+  const hayFiltrosActivos = Boolean(filtros.producto || filtros.talle || filtros.color);
+  const productosFiltrados = filtrar(productos, filtros);
+
+  if (!productos.length || (hayFiltrosActivos && !productosFiltrados.length)) {
     return (
       <div className="tabla-vacia">
         <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
@@ -80,7 +95,9 @@ export default function ProductosTable({ refreshKey, onEditar }) {
           />
           <path d="M27 45 18 40.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
         </svg>
-        <p className="tabla-vacia-titulo">No encontramos productos registrados.</p>
+        <p className="tabla-vacia-titulo">
+          {hayFiltrosActivos ? 'No encontramos productos con esos filtros.' : 'No encontramos productos registrados.'}
+        </p>
       </div>
     );
   }
@@ -105,7 +122,7 @@ export default function ProductosTable({ refreshKey, onEditar }) {
           </tr>
         </thead>
         <tbody>
-          {productos.map((producto) => (
+          {productosFiltrados.map((producto) => (
             <tr key={producto.id}>
               <td>{producto.categoria} {producto.nombre}</td>
               <td>
