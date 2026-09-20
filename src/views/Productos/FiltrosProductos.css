@@ -4,6 +4,9 @@
 }
 
 .btn-filtrar {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   font: inherit;
   font-size: 15px;
   font-weight: 500;
@@ -24,7 +27,8 @@
 .filtros-panel {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 20;
   width: 240px;
   padding: 14px;
@@ -60,6 +64,18 @@
 .filtro-campo input:focus {
   outline: none;
   border-color: var(--accent-border);
+}
+
+.btn-aplicar-filtros {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 9px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
 }
 
 .btn-limpiar-filtros {

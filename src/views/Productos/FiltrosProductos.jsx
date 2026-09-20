@@ -4,18 +4,15 @@ import Select from '../../components/Select';
 import './FiltrosProductos.css';
 
 const TODOS = 'Todos';
+const VACIO = { producto: '', talle: '', color: '' };
 
 export default function FiltrosProductos({ onChange }) {
   const [abierto, setAbierto] = useState(false);
   const [producto, setProducto] = useState('');
   const [talle, setTalle] = useState('');
   const [color, setColor] = useState('');
+  const [aplicados, setAplicados] = useState(VACIO);
   const rootRef = useRef(null);
-
-  useEffect(() => {
-    onChange({ producto, talle, color });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [producto, talle, color]);
 
   useEffect(() => {
     if (!abierto) return;
@@ -26,12 +23,21 @@ export default function FiltrosProductos({ onChange }) {
     return () => document.removeEventListener('mousedown', onClickFuera);
   }, [abierto]);
 
-  const hayFiltrosActivos = Boolean(producto || talle || color);
+  const hayFiltrosActivos = Boolean(aplicados.producto || aplicados.talle || aplicados.color);
+
+  function aplicar() {
+    const nuevos = { producto, talle, color };
+    setAplicados(nuevos);
+    onChange(nuevos);
+    setAbierto(false);
+  }
 
   function limpiarFiltros() {
     setProducto('');
     setTalle('');
     setColor('');
+    setAplicados(VACIO);
+    onChange(VACIO);
   }
 
   return (
@@ -41,6 +47,15 @@ export default function FiltrosProductos({ onChange }) {
         className={`btn-filtrar ${hayFiltrosActivos ? 'activo' : ''}`}
         onClick={() => setAbierto((o) => !o)}
       >
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path
+            d="M2 3h12l-4.5 5.5V13l-3 1.5V8.5L2 3Z"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
         Filtrar{hayFiltrosActivos ? ' ●' : ''}
       </button>
 
@@ -66,6 +81,9 @@ export default function FiltrosProductos({ onChange }) {
             Color
             <input value={color} onChange={(e) => setColor(e.target.value)} placeholder="Buscar por color" />
           </label>
+          <button type="button" className="btn-aplicar-filtros" onClick={aplicar}>
+            Aplicar
+          </button>
           {hayFiltrosActivos && (
             <button type="button" className="btn-limpiar-filtros" onClick={limpiarFiltros}>
               Limpiar filtros
