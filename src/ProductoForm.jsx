@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createProducto } from './api';
 
 const TALLES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
-const CATEGORIAS = ['Pantalón', 'Remera', 'Vestido'];
+const CATEGORIAS = ['Pantalón', 'Blusa', 'Vestido', 'Remera'];
 
 const VACIO = { nombre: '', categoria: '' };
 
