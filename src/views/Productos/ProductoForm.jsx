@@ -302,7 +302,10 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
       )}
 
       <div className="form-actions">
-        <button type="submit" disabled={enviando}>
+        <button
+          type="submit"
+          disabled={enviando || !valores.nombre.trim() || !valores.categoria || talles.length === 0 || colores.length === 0}
+        >
           {enviando ? (productoEditando ? 'Guardando…' : 'Creando…') : productoEditando ? 'Guardar cambios' : 'Crear producto'}
         </button>
         {onCancelar && (
