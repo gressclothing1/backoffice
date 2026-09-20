@@ -194,6 +194,14 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
             options={CATEGORIAS}
           />
         </div>
+        <label className="field">
+          Material
+          <input
+            value={valores.material}
+            onChange={(e) => actualizarCampo('material', e.target.value)}
+            required
+          />
+        </label>
       </div>
 
       <div className="form-field">
