@@ -1,0 +1,61 @@
+.stock-popover {
+  position: fixed;
+  z-index: 40;
+  width: 170px;
+  padding: 10px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stock-popover input {
+  box-sizing: border-box;
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.stock-popover input:focus {
+  outline: none;
+  border-color: var(--accent-border);
+}
+
+.stock-popover-acciones {
+  display: flex;
+  gap: 6px;
+}
+
+.stock-popover-acciones button {
+  flex: 1;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.stock-popover-acciones button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.stock-popover-acciones .btn-agregar {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+}
+
+.stock-popover-acciones .btn-reemplazar {
+  background: var(--accent-bg);
+  color: var(--accent);
+}

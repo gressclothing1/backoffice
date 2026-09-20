@@ -1,7 +1,8 @@
-import { useState } from 'react';
-import { getProductos } from '../../lib/api';
+import { useRef, useState } from 'react';
+import { getProductos, updateProducto } from '../../lib/api';
 import { useFetch } from '../../hooks/useFetch';
 import EliminarProductoModal from './EliminarProductoModal';
+import StockPopover from './StockPopover';
 import './ProductosTable.css';
 
 function ordenar(productos) {
@@ -17,11 +18,51 @@ function fetchProductosOrdenados() {
 export default function ProductosTable({ refreshKey, onEditar }) {
   const [localRefresh, setLocalRefresh] = useState(0);
   const [productoAEliminar, setProductoAEliminar] = useState(null);
+  const [editandoStockId, setEditandoStockId] = useState(null);
+  const [guardandoStock, setGuardandoStock] = useState(false);
+  const [errorStock, setErrorStock] = useState(null);
+  const anchorStockRef = useRef(null);
   const { data: productos, error, loading } = useFetch(fetchProductosOrdenados, [refreshKey, localRefresh]);
 
   function onEliminado() {
     setProductoAEliminar(null);
     setLocalRefresh((k) => k + 1);
+  }
+
+  function abrirEditorStock(producto) {
+    setEditandoStockId(producto.id);
+    setErrorStock(null);
+  }
+
+  function cerrarEditorStock() {
+    setEditandoStockId(null);
+    setErrorStock(null);
+  }
+
+  async function guardarStock(producto, nuevoStock) {
+    setGuardandoStock(true);
+    setErrorStock(null);
+    try {
+      await updateProducto(producto.id, { stock: nuevoStock });
+      cerrarEditorStock();
+      setLocalRefresh((k) => k + 1);
+    } catch (err) {
+      setErrorStock(err.message);
+    } finally {
+      setGuardandoStock(false);
+    }
+  }
+
+  function onAgregarStock(producto, valorTexto) {
+    const delta = parseInt(valorTexto, 10);
+    if (Number.isNaN(delta)) { setErrorStock('Ingresá un número válido.'); return; }
+    guardarStock(producto, producto.stock + delta);
+  }
+
+  function onReemplazarStock(producto, valorTexto) {
+    const nuevo = parseInt(valorTexto, 10);
+    if (Number.isNaN(nuevo)) { setErrorStock('Ingresá un número válido.'); return; }
+    guardarStock(producto, nuevo);
   }
 
   if (loading) return <p className="status">Cargando productos…</p>;
@@ -71,7 +112,38 @@ export default function ProductosTable({ refreshKey, onEditar }) {
                 <span className="badge talle">{producto.talle}</span>
               </td>
               <td>{producto.color}</td>
-              <td className="col-sticky-stock">{producto.stock}</td>
+              <td className="col-sticky-stock">
+                <div className="stock-celda">
+                  <span>{producto.stock}</span>
+                  <button
+                    type="button"
+                    className="btn-icono-mini"
+                    ref={producto.id === editandoStockId ? anchorStockRef : undefined}
+                    onClick={() => abrirEditorStock(producto)}
+                    aria-label="Editar stock"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M11.3 2.3a1.5 1.5 0 0 1 2.1 2.1L5.6 12.2l-3 .8.8-3 7.9-7.7Z"
+                        stroke="currentColor"
+                        strokeWidth="1.4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                {editandoStockId === producto.id && (
+                  <StockPopover
+                    anchorRef={anchorStockRef}
+                    onAgregar={(v) => onAgregarStock(producto, v)}
+                    onReemplazar={(v) => onReemplazarStock(producto, v)}
+                    onCerrar={cerrarEditorStock}
+                    enviando={guardandoStock}
+                    error={errorStock}
+                  />
+                )}
+              </td>
               <td className="col-sticky-acciones">
                 <div className="fila-acciones">
                   <button type="button" className="btn-icono" onClick={() => onEditar?.(producto)} aria-label="Editar">
