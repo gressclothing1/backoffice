@@ -74,6 +74,7 @@ export default function ProductosTable({
 
   const hayFiltrosActivos = Boolean(filtros.categoria || filtros.nombre || filtros.talle || filtros.color);
   const productosFiltrados = filtrar(productos, filtros);
+  const ocultarProducto = Boolean(filtros.nombre);
 
   if (!productos.length || (hayFiltrosActivos && !productosFiltrados.length)) {
     return (
@@ -99,7 +100,7 @@ export default function ProductosTable({
     <div className="table-wrap">
       <table className="table-productos">
         <colgroup>
-          <col style={{ width: '130px' }} />
+          {!ocultarProducto && <col style={{ width: '130px' }} />}
           <col style={{ width: '70px' }} />
           <col style={{ width: '90px' }} />
           <col style={{ width: '80px' }} />
@@ -107,7 +108,7 @@ export default function ProductosTable({
         </colgroup>
         <thead>
           <tr>
-            <th>Producto</th>
+            {!ocultarProducto && <th>Producto</th>}
             <th>Talle</th>
             <th>Color</th>
             <th className="col-sticky-stock">Stock</th>
@@ -117,7 +118,11 @@ export default function ProductosTable({
         <tbody>
           {productosFiltrados.map((producto) => (
             <tr key={producto.id}>
-              <td>{producto.categoria} {producto.nombre}</td>
+              {!ocultarProducto && (
+                <td>
+                  {producto.categoria} {producto.nombre}
+                </td>
+              )}
               <td>
                 <span className="badge talle">{producto.talle}</span>
               </td>
