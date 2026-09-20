@@ -224,7 +224,25 @@
 .imagenes-input {
   font: inherit;
   font-size: 14px;
+  color: var(--text);
+}
+
+.imagenes-input::file-selector-button {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  margin-right: 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
   color: var(--text-h);
+  cursor: pointer;
+}
+
+.imagenes-input::file-selector-button:hover {
+  background: var(--code-bg);
+  border-color: var(--border-strong);
 }
 
 .imagenes-preview {
