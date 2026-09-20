@@ -6,14 +6,20 @@ import './FiltrosProductos.css';
 const TODOS = 'Todos';
 const VACIO = { categoria: '', nombre: '', talle: '', color: '' };
 
-export default function FiltrosProductos({ productos, onChange }) {
+export default function FiltrosProductos({ productos, filtros, onChange }) {
   const [abierto, setAbierto] = useState(false);
-  const [categoria, setCategoria] = useState('');
-  const [nombre, setNombre] = useState('');
-  const [talle, setTalle] = useState('');
-  const [color, setColor] = useState('');
-  const [aplicados, setAplicados] = useState(VACIO);
+  const [categoria, setCategoria] = useState(filtros.categoria);
+  const [nombre, setNombre] = useState(filtros.nombre);
+  const [talle, setTalle] = useState(filtros.talle);
+  const [color, setColor] = useState(filtros.color);
   const rootRef = useRef(null);
+
+  useEffect(() => {
+    setCategoria(filtros.categoria);
+    setNombre(filtros.nombre);
+    setTalle(filtros.talle);
+    setColor(filtros.color);
+  }, [filtros]);
 
   useEffect(() => {
     if (!abierto) return;
@@ -43,7 +49,7 @@ export default function FiltrosProductos({ productos, onChange }) {
     [variantesDelNombre]
   );
 
-  const hayFiltrosActivos = Boolean(aplicados.categoria || aplicados.nombre || aplicados.talle || aplicados.color);
+  const hayFiltrosActivos = Boolean(filtros.categoria || filtros.nombre || filtros.talle || filtros.color);
   const hayNombre = Boolean(nombre);
 
   function actualizarCategoria(v) {
@@ -60,18 +66,11 @@ export default function FiltrosProductos({ productos, onChange }) {
   }
 
   function aplicar() {
-    const nuevos = { categoria, nombre, talle, color };
-    setAplicados(nuevos);
-    onChange(nuevos);
+    onChange({ categoria, nombre, talle, color });
     setAbierto(false);
   }
 
   function limpiarFiltros() {
-    setCategoria('');
-    setNombre('');
-    setTalle('');
-    setColor('');
-    setAplicados(VACIO);
     onChange(VACIO);
   }
 

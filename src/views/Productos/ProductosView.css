@@ -16,3 +16,28 @@
   color: #fff;
   cursor: pointer;
 }
+
+.filtros-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.chip-quitar-todos {
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border: none;
+  border-radius: 999px;
+  background: var(--code-bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.chip-quitar-todos:hover {
+  background: rgba(209, 67, 91, 0.12);
+  color: #d1435b;
+}

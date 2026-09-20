@@ -44,6 +44,20 @@ export default function ProductosView() {
     setMostrarForm(true);
   }
 
+  function quitarFiltro(campo) {
+    setFiltros((f) => {
+      if (campo === 'categoria') return { ...f, categoria: '', nombre: '', talle: '', color: '' };
+      if (campo === 'nombre') return { ...f, nombre: '', talle: '', color: '' };
+      return { ...f, [campo]: '' };
+    });
+  }
+
+  function quitarTodosLosFiltros() {
+    setFiltros(FILTROS_VACIOS);
+  }
+
+  const hayFiltrosActivos = Boolean(filtros.categoria || filtros.nombre || filtros.talle || filtros.color);
+
   if (mostrarForm) {
     return (
       <ProductoForm
@@ -63,8 +77,49 @@ export default function ProductosView() {
         <button type="button" className="btn-crear-producto" onClick={() => setMostrarForm(true)}>
           + Crear producto
         </button>
-        <FiltrosProductos productos={productos || []} onChange={setFiltros} />
+        <FiltrosProductos productos={productos || []} filtros={filtros} onChange={setFiltros} />
       </div>
+
+      {hayFiltrosActivos && (
+        <div className="filtros-chips">
+          {filtros.categoria && (
+            <span className="chip">
+              Categoría: {filtros.categoria}
+              <button type="button" onClick={() => quitarFiltro('categoria')} aria-label="Quitar filtro de categoría">
+                ×
+              </button>
+            </span>
+          )}
+          {filtros.nombre && (
+            <span className="chip">
+              Nombre: {filtros.nombre}
+              <button type="button" onClick={() => quitarFiltro('nombre')} aria-label="Quitar filtro de nombre">
+                ×
+              </button>
+            </span>
+          )}
+          {filtros.talle && (
+            <span className="chip">
+              Talle: {filtros.talle}
+              <button type="button" onClick={() => quitarFiltro('talle')} aria-label="Quitar filtro de talle">
+                ×
+              </button>
+            </span>
+          )}
+          {filtros.color && (
+            <span className="chip">
+              Color: {filtros.color}
+              <button type="button" onClick={() => quitarFiltro('color')} aria-label="Quitar filtro de color">
+                ×
+              </button>
+            </span>
+          )}
+          <button type="button" className="chip-quitar-todos" onClick={quitarTodosLosFiltros}>
+            Quitar todos
+          </button>
+        </div>
+      )}
+
       <ProductosTable
         productos={productos}
         loading={loading}
