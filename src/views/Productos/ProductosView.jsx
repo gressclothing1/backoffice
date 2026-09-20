@@ -21,6 +21,7 @@ const FILTROS_VACIOS = { categoria: '', nombre: '', talle: '', color: '' };
 export default function ProductosView() {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
+  const [variantesDelProducto, setVariantesDelProducto] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [filtros, setFiltros] = useState(FILTROS_VACIOS);
   const { data: productos, error, loading } = useFetch(fetchProductosOrdenados, [refreshKey]);
@@ -32,6 +33,7 @@ export default function ProductosView() {
   function cerrarForm() {
     setMostrarForm(false);
     setProductoEditando(null);
+    setVariantesDelProducto([]);
   }
 
   function onCreated() {
@@ -39,8 +41,9 @@ export default function ProductosView() {
     cerrarForm();
   }
 
-  function editar(producto) {
+  function editar(producto, variantes) {
     setProductoEditando(producto);
+    setVariantesDelProducto(variantes || [producto]);
     setMostrarForm(true);
   }
 
@@ -63,6 +66,7 @@ export default function ProductosView() {
       <ProductoForm
         titulo={productoEditando ? 'Editar producto' : 'Nuevo producto'}
         productoEditando={productoEditando}
+        variantesDelProducto={variantesDelProducto}
         onCerrar={cerrarForm}
         onCreated={onCreated}
         onCancelar={cerrarForm}

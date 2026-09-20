@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createProducto, updateProducto, createImagen, uploadImagen } from '../../lib/api';
+import { createProducto, updateProducto, deleteProducto, createImagen, uploadImagen } from '../../lib/api';
 import { TALLES, CATEGORIAS } from '../../lib/constants';
 import Select from '../../components/Select';
 import './ProductoForm.css';
@@ -8,12 +8,13 @@ const MAX_IMAGENES = 6;
 
 const VACIO = { nombre: '', categoria: '', material: '' };
 
-export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, productoEditando }) {
-  const [valores, setValores] = useState(() =>
-    productoEditando
-      ? { nombre: productoEditando.nombre, categoria: productoEditando.categoria, material: productoEditando.material || '' }
-      : VACIO
-  );
+function valoresDeVariante(producto) {
+  return { nombre: producto.nombre, categoria: producto.categoria, material: producto.material || '' };
+}
+
+export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, productoEditando, variantesDelProducto = [] }) {
+  const [modoEdicion, setModoEdicion] = useState('variante');
+  const [valores, setValores] = useState(() => (productoEditando ? valoresDeVariante(productoEditando) : VACIO));
   const [talles, setTalles] = useState(() => (productoEditando ? [productoEditando.talle] : []));
   const [medidasPorTalle, setMedidasPorTalle] = useState(() =>
     productoEditando ? { [productoEditando.talle]: productoEditando.medidas } : {}
@@ -26,6 +27,29 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
   const [exito, setExito] = useState(null);
+
+  function cambiarModoEdicion(modo) {
+    if (modo === modoEdicion || !productoEditando) return;
+    setModoEdicion(modo);
+    setValores(valoresDeVariante(productoEditando));
+
+    if (modo === 'variante') {
+      setTalles([productoEditando.talle]);
+      setMedidasPorTalle({ [productoEditando.talle]: productoEditando.medidas });
+      setColores([productoEditando.color]);
+      setImagenesPorColor({ [productoEditando.color]: [] });
+      return;
+    }
+
+    const tallesUnicos = [...new Set(variantesDelProducto.map((v) => v.talle))];
+    const coloresUnicos = [...new Set(variantesDelProducto.map((v) => v.color))];
+    const medidas = {};
+    variantesDelProducto.forEach((v) => { medidas[v.talle] = v.medidas; });
+    setTalles(tallesUnicos);
+    setMedidasPorTalle(medidas);
+    setColores(coloresUnicos);
+    setImagenesPorColor(Object.fromEntries(coloresUnicos.map((c) => [c, []])));
+  }
 
   function actualizarCampo(campo, valor) {
     setValores((v) => ({ ...v, [campo]: valor }));
@@ -112,16 +136,31 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
       const combinaciones = talles.flatMap((talle) =>
         colores.map((color) => ({ ...base, talle, medidas: medidasPorTalle[talle].trim(), color }))
       );
-      const productosCreados = await Promise.all(
-        combinaciones.map((producto) => {
-          const esOriginal =
-            productoEditando && producto.talle === productoEditando.talle && producto.color === productoEditando.color;
-          if (esOriginal) {
-            return updateProducto(productoEditando.id, { ...producto, stock: productoEditando.stock });
-          }
-          return createProducto(producto);
-        })
-      );
+
+      let productosCreados;
+      if (modoEdicion === 'producto' && productoEditando) {
+        productosCreados = await Promise.all(
+          combinaciones.map((producto) => {
+            const existente = variantesDelProducto.find((v) => v.talle === producto.talle && v.color === producto.color);
+            if (existente) return updateProducto(existente.id, { ...producto, stock: existente.stock });
+            return createProducto(producto);
+          })
+        );
+        const combosActuales = new Set(combinaciones.map((c) => `${c.talle}__${c.color}`));
+        const aEliminar = variantesDelProducto.filter((v) => !combosActuales.has(`${v.talle}__${v.color}`));
+        await Promise.all(aEliminar.map((v) => deleteProducto(v.id)));
+      } else {
+        productosCreados = await Promise.all(
+          combinaciones.map((producto) => {
+            const esOriginal =
+              productoEditando && producto.talle === productoEditando.talle && producto.color === productoEditando.color;
+            if (esOriginal) {
+              return updateProducto(productoEditando.id, { ...producto, stock: productoEditando.stock });
+            }
+            return createProducto(producto);
+          })
+        );
+      }
 
       const coloresConImagenes = colores.filter((color) => (imagenesPorColor[color]?.length || 0) > 0);
       if (coloresConImagenes.length > 0) {
@@ -151,10 +190,11 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
       Object.values(imagenesPorColor).flat().forEach((imagen) => URL.revokeObjectURL(imagen.previewUrl));
       setImagenesPorColor({});
       const esSoloEdicion =
-        productoEditando &&
-        combinaciones.length === 1 &&
-        combinaciones[0].talle === productoEditando.talle &&
-        combinaciones[0].color === productoEditando.color;
+        modoEdicion === 'producto' ||
+        (productoEditando &&
+          combinaciones.length === 1 &&
+          combinaciones[0].talle === productoEditando.talle &&
+          combinaciones[0].color === productoEditando.color);
       setExito(
         esSoloEdicion
           ? 'Producto actualizado.'
@@ -178,6 +218,25 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
               ×
             </button>
           )}
+        </div>
+      )}
+
+      {productoEditando && (
+        <div className="modo-edicion-chips">
+          <button
+            type="button"
+            className={`chip-toggle ${modoEdicion === 'variante' ? 'activo' : ''}`}
+            onClick={() => cambiarModoEdicion('variante')}
+          >
+            Modificar variante
+          </button>
+          <button
+            type="button"
+            className={`chip-toggle ${modoEdicion === 'producto' ? 'activo' : ''}`}
+            onClick={() => cambiarModoEdicion('producto')}
+          >
+            Modificar producto entero
+          </button>
         </div>
       )}
 

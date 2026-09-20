@@ -22,6 +22,13 @@
   font-weight: 500;
 }
 
+.modo-edicion-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
 .btn-cerrar-form {
   display: flex;
   align-items: center;

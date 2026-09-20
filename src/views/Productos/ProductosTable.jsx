@@ -166,7 +166,12 @@ export default function ProductosTable({
               </td>
               <td className="col-sticky-acciones">
                 <div className="fila-acciones">
-                  <button type="button" className="btn-icono" onClick={() => onEditar?.(producto)} aria-label="Editar">
+                  <button
+                    type="button"
+                    className="btn-icono"
+                    onClick={() => onEditar?.(producto, productos.filter((p) => p.nombre === producto.nombre))}
+                    aria-label="Editar"
+                  >
                     <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
                       <path
                         d="M11.3 2.3a1.5 1.5 0 0 1 2.1 2.1L5.6 12.2l-3 .8.8-3 7.9-7.7Z"
