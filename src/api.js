@@ -1,14 +1,22 @@
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 const API_KEY = import.meta.env.VITE_API_KEY;
 
-async function request(path) {
-  const headers = API_KEY ? { 'x-api-key': API_KEY } : undefined;
-  const response = await fetch(`${BASE_URL}/api/${path}`, { headers });
+async function request(path, options = {}) {
+  const headers = { ...(API_KEY ? { 'x-api-key': API_KEY } : {}), ...options.headers };
+  const response = await fetch(`${BASE_URL}/api/${path}`, { ...options, headers });
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     throw new Error(body.error || `Error al pedir ${path} (${response.status})`);
   }
   return response.json();
+}
+
+function requestJson(method, path, data) {
+  return request(path, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
 }
 
 export function getEnvios() {
@@ -21,4 +29,8 @@ export function getProductos() {
 
 export function getClientes() {
   return request('clientes');
+}
+
+export function createProducto(producto) {
+  return requestJson('POST', 'productos', producto);
 }

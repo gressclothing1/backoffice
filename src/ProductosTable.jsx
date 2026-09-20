@@ -23,8 +23,8 @@ function fetchProductosAgrupados() {
   return getProductos().then(agruparPorNombre);
 }
 
-export default function ProductosTable() {
-  const { data: productos, error, loading } = useFetch(fetchProductosAgrupados, []);
+export default function ProductosTable({ refreshKey }) {
+  const { data: productos, error, loading } = useFetch(fetchProductosAgrupados, [refreshKey]);
 
   if (loading) return <p className="status">Cargando productos…</p>;
   if (error) return <p className="status error">Error al cargar productos: {error}</p>;
