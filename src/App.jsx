@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import EnviosTable from './views/Envios/EnviosTable';
-import ProductosTable from './views/Productos/ProductosTable';
-import ProductoForm from './views/Productos/ProductoForm';
+import ProductosView from './views/Productos/ProductosView';
 import ClientesTable from './views/Clientes/ClientesTable';
 import './App.css';
 
@@ -13,7 +12,6 @@ const TABS = [
 
 function App() {
   const [tab, setTab] = useState('envios');
-  const [productosRefreshKey, setProductosRefreshKey] = useState(0);
 
   return (
     <div className="app-shell">
@@ -45,8 +43,7 @@ function App() {
         {tab === 'productos' && (
           <section className="panel">
             <h2>Productos</h2>
-            <ProductoForm onCreated={() => setProductosRefreshKey((k) => k + 1)} />
-            <ProductosTable refreshKey={productosRefreshKey} />
+            <ProductosView />
           </section>
         )}
 

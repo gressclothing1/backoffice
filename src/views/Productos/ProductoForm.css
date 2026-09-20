@@ -196,3 +196,8 @@
   opacity: 0.6;
   cursor: default;
 }
+
+.form-actions button.form-actions-cancelar {
+  background: transparent;
+  color: var(--text);
+}

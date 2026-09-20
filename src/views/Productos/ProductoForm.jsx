@@ -8,7 +8,7 @@ const CATEGORIAS = ['Pantalón', 'Blusa', 'Vestido', 'Remera'];
 
 const VACIO = { nombre: '', categoria: '' };
 
-export default function ProductoForm({ onCreated }) {
+export default function ProductoForm({ onCreated, onCancelar }) {
   const [valores, setValores] = useState(VACIO);
   const [talles, setTalles] = useState([]);
   const [medidasPorTalle, setMedidasPorTalle] = useState({});
@@ -181,6 +181,11 @@ export default function ProductoForm({ onCreated }) {
         <button type="submit" disabled={enviando}>
           {enviando ? 'Creando…' : 'Crear producto'}
         </button>
+        {onCancelar && (
+          <button type="button" className="form-actions-cancelar" onClick={onCancelar} disabled={enviando}>
+            Cancelar
+          </button>
+        )}
         {error && <span className="status error">{error}</span>}
         {exito && !error && <span className="status success">{exito}</span>}
       </div>
