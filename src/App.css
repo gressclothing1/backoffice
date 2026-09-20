@@ -195,12 +195,6 @@ a {
   color: var(--text-h);
 }
 
-.form-grid select {
-  background: var(--accent-bg);
-  border-color: var(--accent-border);
-  color: var(--accent);
-}
-
 .form-grid input:focus,
 .form-grid select:focus {
   outline: none;
@@ -229,10 +223,10 @@ a {
   font: inherit;
   font-size: 14px;
   padding: 6px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--accent-border);
   border-radius: 999px;
-  background: var(--bg);
-  color: var(--text-h);
+  background: var(--accent-bg);
+  color: var(--accent);
   cursor: pointer;
 }
 
@@ -247,6 +241,10 @@ a {
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 12px;
   margin-top: 10px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .medida-talle-input {
@@ -275,10 +273,6 @@ a {
 .tag-input-row {
   display: flex;
   gap: 8px;
-
-  @media (max-width: 640px) {
-    flex-wrap: wrap;
-  }
 }
 
 .tag-input-row input {
@@ -296,15 +290,11 @@ a {
   font: inherit;
   font-size: 14px;
   padding: 8px 14px;
-  border: 1px solid var(--accent-border);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: var(--accent-bg);
-  color: var(--accent);
+  background: var(--bg);
+  color: var(--text-h);
   cursor: pointer;
-
-  @media (max-width: 640px) {
-    flex-basis: 100%;
-  }
 }
 
 .chip-list {
@@ -343,8 +333,9 @@ a {
 
 .form-actions {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
   margin-top: 14px;
 }
 
@@ -352,10 +343,11 @@ a {
   font: inherit;
   font-size: 15px;
   padding: 9px 16px;
-  border: none;
+  width: 100%;
+  border: 1px solid var(--accent-border);
   border-radius: 6px;
-  background: var(--accent);
-  color: #fff;
+  background: var(--accent-bg);
+  color: var(--accent);
   cursor: pointer;
 }
 
