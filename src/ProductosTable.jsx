@@ -11,7 +11,7 @@ function agruparPorNombre(productos) {
       variantes: [],
       stockTotal: 0
     };
-    grupo.variantes.push({ id: producto.id, talle: producto.talle, stock: producto.stock });
+    grupo.variantes.push({ id: producto.id, talle: producto.talle, color: producto.color, stock: producto.stock });
     grupo.stockTotal += producto.stock;
     grupos.set(producto.nombre, grupo);
   }
@@ -50,7 +50,7 @@ export default function ProductosTable({ refreshKey }) {
                 <div className="talles">
                   {producto.variantes.map((variante) => (
                     <span key={variante.id} className="badge talle">
-                      {variante.talle}: {variante.stock}
+                      {variante.talle} · {variante.color}
                     </span>
                   ))}
                 </div>
