@@ -230,17 +230,17 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
         <div className="modo-edicion-tabs">
           <button
             type="button"
-            className={`modo-edicion-tab ${modoEdicion === 'variante' ? 'activo' : ''}`}
-            onClick={() => cambiarModoEdicion('variante')}
-          >
-            Variante
-          </button>
-          <button
-            type="button"
             className={`modo-edicion-tab ${modoEdicion === 'producto' ? 'activo' : ''}`}
             onClick={() => cambiarModoEdicion('producto')}
           >
             Producto
+          </button>
+          <button
+            type="button"
+            className={`modo-edicion-tab ${modoEdicion === 'variante' ? 'activo' : ''}`}
+            onClick={() => cambiarModoEdicion('variante')}
+          >
+            Variante
           </button>
         </div>
       )}
