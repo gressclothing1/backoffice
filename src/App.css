@@ -173,6 +173,36 @@ a {
   color: #fff;
 }
 
+.medidas-por-talle {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.medida-talle-input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.medida-talle-input input {
+  font: inherit;
+  font-size: 15px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.medida-talle-input input:focus {
+  outline: none;
+  border-color: var(--accent-border);
+}
+
 .tag-input-row {
   display: flex;
   gap: 8px;

@@ -4,11 +4,12 @@ import { createProducto } from './api';
 const TALLES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 const CATEGORIAS = ['Pantalón', 'Remera', 'Vestido'];
 
-const VACIO = { nombre: '', categoria: '', medidas: '' };
+const VACIO = { nombre: '', categoria: '' };
 
 export default function ProductoForm({ onCreated }) {
   const [valores, setValores] = useState(VACIO);
   const [talles, setTalles] = useState([]);
+  const [medidasPorTalle, setMedidasPorTalle] = useState({});
   const [colores, setColores] = useState([]);
   const [colorInput, setColorInput] = useState('');
   const [enviando, setEnviando] = useState(false);
@@ -21,6 +22,17 @@ export default function ProductoForm({ onCreated }) {
 
   function toggleTalle(talle) {
     setTalles((t) => (t.includes(talle) ? t.filter((x) => x !== talle) : [...t, talle]));
+    setMedidasPorTalle((m) => {
+      if (talle in m) {
+        const { [talle]: _quitado, ...resto } = m;
+        return resto;
+      }
+      return { ...m, [talle]: '' };
+    });
+  }
+
+  function actualizarMedida(talle, medida) {
+    setMedidasPorTalle((m) => ({ ...m, [talle]: medida }));
   }
 
   function agregarColor() {
@@ -48,20 +60,26 @@ export default function ProductoForm({ onCreated }) {
 
     if (talles.length === 0) { setError('Elegí al menos un talle.'); return; }
     if (colores.length === 0) { setError('Agregá al menos un color.'); return; }
+    if (talles.some((talle) => !medidasPorTalle[talle]?.trim())) {
+      setError('Completá las medidas de todos los talles elegidos.');
+      return;
+    }
 
     setEnviando(true);
     try {
       const base = {
         nombre: valores.nombre.trim(),
         categoria: valores.categoria.trim(),
-        medidas: valores.medidas.trim(),
         stock: 0
       };
-      const combinaciones = talles.flatMap((talle) => colores.map((color) => ({ ...base, talle, color })));
+      const combinaciones = talles.flatMap((talle) =>
+        colores.map((color) => ({ ...base, talle, medidas: medidasPorTalle[talle].trim(), color }))
+      );
       await Promise.all(combinaciones.map((producto) => createProducto(producto)));
 
       setValores(VACIO);
       setTalles([]);
+      setMedidasPorTalle({});
       setColores([]);
       setExito(`Se ${combinaciones.length === 1 ? 'creó 1 variante' : `crearon ${combinaciones.length} variantes`}.`);
       onCreated?.();
@@ -100,14 +118,6 @@ export default function ProductoForm({ onCreated }) {
             ))}
           </select>
         </label>
-        <label>
-          Medidas
-          <input
-            value={valores.medidas}
-            onChange={(e) => actualizarCampo('medidas', e.target.value)}
-            required
-          />
-        </label>
       </div>
 
       <div className="form-field">
@@ -124,6 +134,20 @@ export default function ProductoForm({ onCreated }) {
             </button>
           ))}
         </div>
+        {talles.length > 0 && (
+          <div className="medidas-por-talle">
+            {talles.map((talle) => (
+              <label key={talle} className="medida-talle-input">
+                Medidas para {talle}
+                <input
+                  value={medidasPorTalle[talle] || ''}
+                  onChange={(e) => actualizarMedida(talle, e.target.value)}
+                  required
+                />
+              </label>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="form-field">
