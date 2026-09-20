@@ -8,6 +8,7 @@ async function request(path, options = {}) {
     const body = await response.json().catch(() => ({}));
     throw new Error(body.error || `Error al pedir ${path} (${response.status})`);
   }
+  if (response.status === 204) return null;
   return response.json();
 }
 
@@ -33,6 +34,14 @@ export function getClientes() {
 
 export function createProducto(producto) {
   return requestJson('POST', 'productos', producto);
+}
+
+export function updateProducto(id, producto) {
+  return requestJson('PATCH', `productos/${id}`, producto);
+}
+
+export function deleteProducto(id) {
+  return request(`productos/${id}`, { method: 'DELETE' });
 }
 
 export function createImagen(imagen) {

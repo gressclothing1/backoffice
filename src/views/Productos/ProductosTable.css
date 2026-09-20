@@ -13,3 +13,52 @@
   font-weight: 500;
   color: var(--text-h);
 }
+
+.col-sticky-stock,
+.col-sticky-acciones {
+  position: sticky;
+  background: var(--bg);
+}
+
+th.col-sticky-stock,
+th.col-sticky-acciones {
+  background: var(--code-bg);
+}
+
+.col-sticky-acciones {
+  right: 0;
+  width: 84px;
+}
+
+.col-sticky-stock {
+  right: 84px;
+  box-shadow: -6px 0 6px -6px rgba(0, 0, 0, 0.15);
+}
+
+.fila-acciones {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.btn-icono:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.btn-icono-eliminar:hover {
+  background: rgba(209, 67, 91, 0.12);
+  color: #d1435b;
+}

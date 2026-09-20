@@ -5,10 +5,12 @@ import './ProductosView.css';
 
 export default function ProductosView() {
   const [mostrarForm, setMostrarForm] = useState(false);
+  const [productoEditando, setProductoEditando] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
   function cerrarForm() {
     setMostrarForm(false);
+    setProductoEditando(null);
   }
 
   function onCreated() {
@@ -16,8 +18,21 @@ export default function ProductosView() {
     cerrarForm();
   }
 
+  function editar(producto) {
+    setProductoEditando(producto);
+    setMostrarForm(true);
+  }
+
   if (mostrarForm) {
-    return <ProductoForm titulo="Nuevo producto" onCerrar={cerrarForm} onCreated={onCreated} onCancelar={cerrarForm} />;
+    return (
+      <ProductoForm
+        titulo={productoEditando ? 'Editar producto' : 'Nuevo producto'}
+        productoEditando={productoEditando}
+        onCerrar={cerrarForm}
+        onCreated={onCreated}
+        onCancelar={cerrarForm}
+      />
+    );
   }
 
   return (
@@ -26,7 +41,7 @@ export default function ProductosView() {
       <button type="button" className="btn-crear-producto" onClick={() => setMostrarForm(true)}>
         + Crear producto
       </button>
-      <ProductosTable refreshKey={refreshKey} />
+      <ProductosTable refreshKey={refreshKey} onEditar={editar} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { createProducto, createImagen, uploadImagen } from '../../lib/api';
+import { createProducto, updateProducto, createImagen, uploadImagen } from '../../lib/api';
 import Select from '../../components/Select';
 import './ProductoForm.css';
 
@@ -9,13 +9,19 @@ const MAX_IMAGENES = 6;
 
 const VACIO = { nombre: '', categoria: '' };
 
-export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar }) {
-  const [valores, setValores] = useState(VACIO);
-  const [talles, setTalles] = useState([]);
-  const [medidasPorTalle, setMedidasPorTalle] = useState({});
-  const [colores, setColores] = useState([]);
+export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, productoEditando }) {
+  const [valores, setValores] = useState(() =>
+    productoEditando ? { nombre: productoEditando.nombre, categoria: productoEditando.categoria } : VACIO
+  );
+  const [talles, setTalles] = useState(() => (productoEditando ? [productoEditando.talle] : []));
+  const [medidasPorTalle, setMedidasPorTalle] = useState(() =>
+    productoEditando ? { [productoEditando.talle]: productoEditando.medidas } : {}
+  );
+  const [colores, setColores] = useState(() => (productoEditando ? [productoEditando.color] : []));
   const [colorInput, setColorInput] = useState('');
-  const [imagenesPorColor, setImagenesPorColor] = useState({});
+  const [imagenesPorColor, setImagenesPorColor] = useState(() =>
+    productoEditando ? { [productoEditando.color]: [] } : {}
+  );
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
   const [exito, setExito] = useState(null);
@@ -103,7 +109,16 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar }
       const combinaciones = talles.flatMap((talle) =>
         colores.map((color) => ({ ...base, talle, medidas: medidasPorTalle[talle].trim(), color }))
       );
-      const productosCreados = await Promise.all(combinaciones.map((producto) => createProducto(producto)));
+      const productosCreados = await Promise.all(
+        combinaciones.map((producto) => {
+          const esOriginal =
+            productoEditando && producto.talle === productoEditando.talle && producto.color === productoEditando.color;
+          if (esOriginal) {
+            return updateProducto(productoEditando.id, { ...producto, stock: productoEditando.stock });
+          }
+          return createProducto(producto);
+        })
+      );
 
       const coloresConImagenes = colores.filter((color) => (imagenesPorColor[color]?.length || 0) > 0);
       if (coloresConImagenes.length > 0) {
@@ -132,7 +147,16 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar }
       setColores([]);
       Object.values(imagenesPorColor).flat().forEach((imagen) => URL.revokeObjectURL(imagen.previewUrl));
       setImagenesPorColor({});
-      setExito(`Se ${combinaciones.length === 1 ? 'creó 1 variante' : `crearon ${combinaciones.length} variantes`}.`);
+      const esSoloEdicion =
+        productoEditando &&
+        combinaciones.length === 1 &&
+        combinaciones[0].talle === productoEditando.talle &&
+        combinaciones[0].color === productoEditando.color;
+      setExito(
+        esSoloEdicion
+          ? 'Producto actualizado.'
+          : `Se ${combinaciones.length === 1 ? 'creó 1 variante' : `crearon ${combinaciones.length} variantes`}.`
+      );
       setTimeout(() => onCreated?.(), 1200);
     } catch (err) {
       setError(err.message);
@@ -279,7 +303,7 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar }
 
       <div className="form-actions">
         <button type="submit" disabled={enviando}>
-          {enviando ? 'Creando…' : 'Crear producto'}
+          {enviando ? (productoEditando ? 'Guardando…' : 'Creando…') : productoEditando ? 'Guardar cambios' : 'Crear producto'}
         </button>
         {onCancelar && (
           <button type="button" className="form-actions-cancelar" onClick={onCancelar} disabled={enviando}>
