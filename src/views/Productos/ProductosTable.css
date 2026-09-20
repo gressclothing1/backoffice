@@ -47,8 +47,7 @@ th.col-sticky-acciones {
 .col-sticky-stock {
   right: 104px;
   width: 80px;
-  border-left: 2px solid var(--border-strong);
-  box-shadow: -6px 0 6px -6px rgba(0, 0, 0, 0.15);
+  box-shadow: -2px 0 0 0 var(--border-strong), -6px 0 6px -6px rgba(0, 0, 0, 0.15);
 }
 
 .fila-acciones {
