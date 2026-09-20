@@ -2,27 +2,61 @@ import { useState } from 'react';
 import EnviosTable from './EnviosTable';
 import ProductosTable from './ProductosTable';
 import ProductoForm from './ProductoForm';
+import ClientesTable from './ClientesTable';
 import './App.css';
 
+const TABS = [
+  { id: 'envios', label: 'Envíos' },
+  { id: 'productos', label: 'Productos' },
+  { id: 'clientes', label: 'Clientes' }
+];
+
 function App() {
+  const [tab, setTab] = useState('envios');
   const [productosRefreshKey, setProductosRefreshKey] = useState(0);
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>Gress · Backoffice</h1>
-      </header>
+    <div className="app-shell">
+      <nav className="side-nav">
+        {TABS.map(({ id, label }) => (
+          <button
+            key={id}
+            type="button"
+            className={`side-nav-item ${tab === id ? 'activo' : ''}`}
+            onClick={() => setTab(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
 
-      <section className="panel">
-        <h2>Envíos</h2>
-        <EnviosTable />
-      </section>
+      <div className="app">
+        <header className="app-header">
+          <h1>Gress · Backoffice</h1>
+        </header>
 
-      <section className="panel">
-        <h2>Productos</h2>
-        <ProductoForm onCreated={() => setProductosRefreshKey((k) => k + 1)} />
-        <ProductosTable refreshKey={productosRefreshKey} />
-      </section>
+        {tab === 'envios' && (
+          <section className="panel">
+            <h2>Envíos</h2>
+            <EnviosTable />
+          </section>
+        )}
+
+        {tab === 'productos' && (
+          <section className="panel">
+            <h2>Productos</h2>
+            <ProductoForm onCreated={() => setProductosRefreshKey((k) => k + 1)} />
+            <ProductosTable refreshKey={productosRefreshKey} />
+          </section>
+        )}
+
+        {tab === 'clientes' && (
+          <section className="panel">
+            <h2>Clientes</h2>
+            <ClientesTable />
+          </section>
+        )}
+      </div>
     </div>
   );
 }

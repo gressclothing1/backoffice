@@ -1,4 +1,15 @@
+.app-shell {
+  display: flex;
+  flex: 1;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+  }
+}
+
 .app {
+  flex: 1;
+  min-width: 0;
   text-align: left;
   padding: 32px;
   display: flex;
@@ -8,6 +19,7 @@
   @media (max-width: 640px) {
     padding: 20px 16px;
     gap: 24px;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -15,6 +27,57 @@
   margin: 0;
   font-size: 32px;
   letter-spacing: -0.5px;
+}
+
+.side-nav {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 12px;
+  border-right: 1px solid var(--border);
+
+  @media (max-width: 640px) {
+    width: auto;
+    flex-direction: row;
+    gap: 0;
+    padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+    border-right: none;
+    border-top: 1px solid var(--border);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    background: var(--bg);
+  }
+}
+
+.side-nav-item {
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+
+  @media (max-width: 640px) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px 4px;
+  }
+}
+
+.side-nav-item.activo {
+  background: var(--accent-bg);
+  color: var(--accent);
 }
 
 .panel h2 {
@@ -132,6 +195,12 @@ a {
   color: var(--text-h);
 }
 
+.form-grid select {
+  background: var(--accent-bg);
+  border-color: var(--accent-border);
+  color: var(--accent);
+}
+
 .form-grid input:focus,
 .form-grid select:focus {
   outline: none;
@@ -206,6 +275,10 @@ a {
 .tag-input-row {
   display: flex;
   gap: 8px;
+
+  @media (max-width: 640px) {
+    flex-wrap: wrap;
+  }
 }
 
 .tag-input-row input {
@@ -223,11 +296,15 @@ a {
   font: inherit;
   font-size: 14px;
   padding: 8px 14px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--accent-border);
   border-radius: 6px;
-  background: var(--bg);
-  color: var(--text-h);
+  background: var(--accent-bg);
+  color: var(--accent);
   cursor: pointer;
+
+  @media (max-width: 640px) {
+    flex-basis: 100%;
+  }
 }
 
 .chip-list {
