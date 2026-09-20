@@ -2,30 +2,18 @@ import { getProductos } from '../../lib/api';
 import { useFetch } from '../../hooks/useFetch';
 import './ProductosTable.css';
 
-function agruparPorNombre(productos) {
-  const grupos = new Map();
-
-  for (const producto of productos) {
-    const grupo = grupos.get(producto.nombre) || {
-      nombre: producto.nombre,
-      categoria: producto.categoria,
-      variantes: [],
-      stockTotal: 0
-    };
-    grupo.variantes.push({ id: producto.id, talle: producto.talle, color: producto.color, stock: producto.stock });
-    grupo.stockTotal += producto.stock;
-    grupos.set(producto.nombre, grupo);
-  }
-
-  return [...grupos.values()].sort((a, b) => a.nombre.localeCompare(b.nombre));
+function ordenar(productos) {
+  return [...productos].sort(
+    (a, b) => a.nombre.localeCompare(b.nombre) || a.color.localeCompare(b.color) || a.talle.localeCompare(b.talle)
+  );
 }
 
-function fetchProductosAgrupados() {
-  return getProductos().then(agruparPorNombre);
+function fetchProductosOrdenados() {
+  return getProductos().then(ordenar);
 }
 
 export default function ProductosTable({ refreshKey }) {
-  const { data: productos, error, loading } = useFetch(fetchProductosAgrupados, [refreshKey]);
+  const { data: productos, error, loading } = useFetch(fetchProductosOrdenados, [refreshKey]);
 
   if (loading) return <p className="status">Cargando productos…</p>;
   if (error) return <p className="status error">Error al cargar productos: {error}</p>;
@@ -54,25 +42,23 @@ export default function ProductosTable({ refreshKey }) {
           <tr>
             <th>Nombre</th>
             <th>Categoría</th>
-            <th>Talles</th>
-            <th>Stock total</th>
+            <th>Talle</th>
+            <th>Color</th>
+            <th>Medidas</th>
+            <th>Stock</th>
           </tr>
         </thead>
         <tbody>
           {productos.map((producto) => (
-            <tr key={producto.nombre}>
+            <tr key={producto.id}>
               <td>{producto.nombre}</td>
               <td>{producto.categoria}</td>
               <td>
-                <div className="talles">
-                  {producto.variantes.map((variante) => (
-                    <span key={variante.id} className="badge talle">
-                      {variante.talle} · {variante.color}
-                    </span>
-                  ))}
-                </div>
+                <span className="badge talle">{producto.talle}</span>
               </td>
-              <td>{producto.stockTotal}</td>
+              <td>{producto.color}</td>
+              <td>{producto.medidas}</td>
+              <td>{producto.stock}</td>
             </tr>
           ))}
         </tbody>
