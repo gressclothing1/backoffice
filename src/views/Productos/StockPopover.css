@@ -60,3 +60,15 @@
   background: var(--accent-bg);
   color: var(--accent);
 }
+
+.stock-popover-acciones .btn-volver {
+  background: var(--code-bg);
+  color: var(--text-h);
+}
+
+.stock-popover-confirmacion {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-h);
+}

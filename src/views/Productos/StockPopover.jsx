@@ -5,6 +5,7 @@ import './StockPopover.css';
 export default function StockPopover({ anchorRef, onAgregar, onReemplazar, onCerrar, enviando, error }) {
   const [valor, setValor] = useState('');
   const [pos, setPos] = useState(null);
+  const [confirmandoReemplazo, setConfirmandoReemplazo] = useState(false);
   const popoverRef = useRef(null);
 
   useEffect(() => {
@@ -46,6 +47,24 @@ export default function StockPopover({ anchorRef, onAgregar, onReemplazar, onCer
 
   if (!pos) return null;
 
+  if (confirmandoReemplazo) {
+    return createPortal(
+      <div className="stock-popover" ref={popoverRef} style={{ left: pos.left, bottom: pos.bottom }}>
+        <p className="stock-popover-confirmacion">¿Estás seguro que desea reemplazar?</p>
+        {error && <span className="status error">{error}</span>}
+        <div className="stock-popover-acciones">
+          <button type="button" className="btn-reemplazar" onClick={() => onReemplazar(valor)} disabled={enviando}>
+            Sí, reemplazar
+          </button>
+          <button type="button" className="btn-volver" onClick={() => setConfirmandoReemplazo(false)} disabled={enviando}>
+            Cancelar
+          </button>
+        </div>
+      </div>,
+      document.body
+    );
+  }
+
   return createPortal(
     <div className="stock-popover" ref={popoverRef} style={{ left: pos.left, bottom: pos.bottom }}>
       <input type="text" inputMode="numeric" value={valor} onChange={onChange} placeholder="0" autoFocus />
@@ -57,7 +76,7 @@ export default function StockPopover({ anchorRef, onAgregar, onReemplazar, onCer
         <button
           type="button"
           className="btn-reemplazar"
-          onClick={() => onReemplazar(valor)}
+          onClick={() => setConfirmandoReemplazo(true)}
           disabled={enviando || valor === ''}
         >
           Reemplazar
