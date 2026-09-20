@@ -89,9 +89,9 @@ export default function ProductosTable({ refreshKey, onEditar }) {
     <div className="table-wrap">
       <table className="table-productos">
         <colgroup>
-          <col style={{ width: '40%' }} />
-          <col style={{ width: '18%' }} />
-          <col style={{ width: '18%' }} />
+          <col style={{ width: '130px' }} />
+          <col style={{ width: '70px' }} />
+          <col style={{ width: '90px' }} />
           <col style={{ width: '80px' }} />
           <col style={{ width: '104px' }} />
         </colgroup>
@@ -114,22 +114,16 @@ export default function ProductosTable({ refreshKey, onEditar }) {
               <td>{producto.color}</td>
               <td className="col-sticky-stock">
                 <div className="stock-celda">
-                  <span>{producto.stock}</span>
+                  <span ref={producto.id === editandoStockId ? anchorStockRef : undefined}>{producto.stock}</span>
                   <button
                     type="button"
                     className="btn-icono-mini"
-                    ref={producto.id === editandoStockId ? anchorStockRef : undefined}
                     onClick={() => abrirEditorStock(producto)}
                     aria-label="Editar stock"
                   >
-                    <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M11.3 2.3a1.5 1.5 0 0 1 2.1 2.1L5.6 12.2l-3 .8.8-3 7.9-7.7Z"
-                        stroke="currentColor"
-                        strokeWidth="1.4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                      <path d="M4 5.5h5M6.5 3v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      <path d="M4 12h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
                     </svg>
                   </button>
                 </div>

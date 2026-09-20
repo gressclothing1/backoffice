@@ -18,7 +18,7 @@
 
 .table-productos {
   table-layout: fixed;
-  min-width: 480px;
+  min-width: 410px;
 }
 
 .table-productos td,
@@ -60,19 +60,18 @@ th.col-sticky-acciones {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
   flex-shrink: 0;
   border: none;
-  border-radius: 4px;
-  background: transparent;
-  color: var(--text);
+  border-radius: 6px;
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
   cursor: pointer;
 }
 
 .btn-icono-mini:hover {
-  background: rgba(37, 99, 235, 0.12);
-  color: #2563eb;
+  background: rgba(37, 99, 235, 0.22);
 }
 
 .fila-acciones {

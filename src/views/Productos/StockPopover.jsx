@@ -11,7 +11,7 @@ export default function StockPopover({ anchorRef, onAgregar, onReemplazar, onCer
     function calcularPosicion() {
       const rect = anchorRef.current?.getBoundingClientRect();
       if (!rect) return;
-      setPos({ left: rect.left, bottom: window.innerHeight - rect.top + 8 });
+      setPos({ left: rect.left + rect.width / 2, bottom: window.innerHeight - rect.top + 8 });
     }
     calcularPosicion();
     window.addEventListener('resize', calcularPosicion);
