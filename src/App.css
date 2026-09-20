@@ -23,6 +23,13 @@
   }
 }
 
+.app-header {
+  width: 100%;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 6px -4px rgba(0, 0, 0, 0.15);
+}
+
 .app-header h1 {
   margin: 0;
   font-size: 26px;

@@ -72,9 +72,7 @@ export default function ProductosView() {
 
   return (
     <div>
-      <header className="productos-header">
-        <h2>Productos</h2>
-      </header>
+      <h2>Productos</h2>
       <div className="productos-toolbar">
         <button type="button" className="btn-crear-producto" onClick={() => setMostrarForm(true)}>
           + Crear producto
