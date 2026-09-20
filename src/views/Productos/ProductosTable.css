@@ -16,9 +16,21 @@
   line-height: 1.4;
 }
 
+.table-productos {
+  table-layout: fixed;
+  min-width: 480px;
+}
+
+.table-productos td,
+.table-productos th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .col-sticky-stock,
 .col-sticky-acciones {
   position: sticky;
+  box-sizing: border-box;
   background: var(--bg);
 }
 
@@ -34,7 +46,8 @@ th.col-sticky-acciones {
 
 .col-sticky-stock {
   right: 104px;
-  border-left: 1px solid var(--border-strong);
+  width: 80px;
+  border-left: 2px solid var(--border-strong);
   box-shadow: -6px 0 6px -6px rgba(0, 0, 0, 0.15);
 }
 

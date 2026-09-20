@@ -47,6 +47,13 @@ export default function ProductosTable({ refreshKey, onEditar }) {
   return (
     <div className="table-wrap">
       <table className="table-productos">
+        <colgroup>
+          <col style={{ width: '40%' }} />
+          <col style={{ width: '18%' }} />
+          <col style={{ width: '18%' }} />
+          <col style={{ width: '80px' }} />
+          <col style={{ width: '104px' }} />
+        </colgroup>
         <thead>
           <tr>
             <th>Producto</th>
