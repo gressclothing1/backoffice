@@ -6,11 +6,13 @@ import './ProductoForm.css';
 
 const MAX_IMAGENES = 6;
 
-const VACIO = { nombre: '', categoria: '' };
+const VACIO = { nombre: '', categoria: '', material: '' };
 
 export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, productoEditando }) {
   const [valores, setValores] = useState(() =>
-    productoEditando ? { nombre: productoEditando.nombre, categoria: productoEditando.categoria } : VACIO
+    productoEditando
+      ? { nombre: productoEditando.nombre, categoria: productoEditando.categoria, material: productoEditando.material || '' }
+      : VACIO
   );
   const [talles, setTalles] = useState(() => (productoEditando ? [productoEditando.talle] : []));
   const [medidasPorTalle, setMedidasPorTalle] = useState(() =>
@@ -91,6 +93,7 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
     setExito(null);
 
     if (!valores.categoria) { setError('Elegí una categoría.'); return; }
+    if (!valores.material.trim()) { setError('Ingresá el material.'); return; }
     if (talles.length === 0) { setError('Elegí al menos un talle.'); return; }
     if (colores.length === 0) { setError('Agregá al menos un color.'); return; }
     if (talles.some((talle) => !medidasPorTalle[talle]?.trim())) {
@@ -103,6 +106,7 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
       const base = {
         nombre: valores.nombre.trim(),
         categoria: valores.categoria.trim(),
+        material: valores.material.trim(),
         stock: 0
       };
       const combinaciones = talles.flatMap((talle) =>
@@ -311,7 +315,14 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
       <div className="form-actions">
         <button
           type="submit"
-          disabled={enviando || !valores.nombre.trim() || !valores.categoria || talles.length === 0 || colores.length === 0}
+          disabled={
+            enviando ||
+            !valores.nombre.trim() ||
+            !valores.categoria ||
+            !valores.material.trim() ||
+            talles.length === 0 ||
+            colores.length === 0
+          }
         >
           {enviando ? (productoEditando ? 'Guardando…' : 'Creando…') : productoEditando ? 'Guardar cambios' : 'Crear producto'}
         </button>
