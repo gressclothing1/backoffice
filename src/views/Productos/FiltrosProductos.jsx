@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
-import { TALLES } from '../../lib/constants';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { CATEGORIAS } from '../../lib/constants';
 import Select from '../../components/Select';
 import './FiltrosProductos.css';
 
 const TODOS = 'Todos';
-const VACIO = { producto: '', talle: '', color: '' };
+const VACIO = { categoria: '', nombre: '', talle: '', color: '' };
 
-export default function FiltrosProductos({ onChange }) {
+export default function FiltrosProductos({ productos, onChange }) {
   const [abierto, setAbierto] = useState(false);
-  const [producto, setProducto] = useState('');
+  const [categoria, setCategoria] = useState('');
+  const [nombre, setNombre] = useState('');
   const [talle, setTalle] = useState('');
   const [color, setColor] = useState('');
   const [aplicados, setAplicados] = useState(VACIO);
@@ -23,17 +24,51 @@ export default function FiltrosProductos({ onChange }) {
     return () => document.removeEventListener('mousedown', onClickFuera);
   }, [abierto]);
 
-  const hayFiltrosActivos = Boolean(aplicados.producto || aplicados.talle || aplicados.color);
+  const nombresDisponibles = useMemo(() => {
+    const relevantes = categoria ? productos.filter((p) => p.categoria === categoria) : productos;
+    return [...new Set(relevantes.map((p) => p.nombre))].sort();
+  }, [productos, categoria]);
+
+  const variantesDelNombre = useMemo(() => {
+    if (!nombre) return [];
+    return productos.filter((p) => p.nombre === nombre && (!categoria || p.categoria === categoria));
+  }, [productos, nombre, categoria]);
+
+  const tallesDisponibles = useMemo(
+    () => [...new Set(variantesDelNombre.map((p) => p.talle))].sort(),
+    [variantesDelNombre]
+  );
+  const coloresDisponibles = useMemo(
+    () => [...new Set(variantesDelNombre.map((p) => p.color))].sort(),
+    [variantesDelNombre]
+  );
+
+  const hayFiltrosActivos = Boolean(aplicados.categoria || aplicados.nombre || aplicados.talle || aplicados.color);
+  const hayNombre = Boolean(nombre);
+
+  function actualizarCategoria(v) {
+    setCategoria(v === TODOS ? '' : v);
+    setNombre('');
+    setTalle('');
+    setColor('');
+  }
+
+  function actualizarNombre(v) {
+    setNombre(v === TODOS ? '' : v);
+    setTalle('');
+    setColor('');
+  }
 
   function aplicar() {
-    const nuevos = { producto, talle, color };
+    const nuevos = { categoria, nombre, talle, color };
     setAplicados(nuevos);
     onChange(nuevos);
     setAbierto(false);
   }
 
   function limpiarFiltros() {
-    setProducto('');
+    setCategoria('');
+    setNombre('');
     setTalle('');
     setColor('');
     setAplicados(VACIO);
@@ -61,26 +96,32 @@ export default function FiltrosProductos({ onChange }) {
 
       {abierto && (
         <div className="filtros-panel">
-          <label className="filtro-campo">
-            Producto
-            <input
-              value={producto}
-              onChange={(e) => setProducto(e.target.value)}
-              placeholder="Buscar por nombre o categoría"
-            />
-          </label>
-          <label className="filtro-campo">
+          <div className="filtro-campo">
+            Categoría
+            <Select value={categoria || TODOS} onChange={actualizarCategoria} options={[TODOS, ...CATEGORIAS]} />
+          </div>
+          <div className="filtro-campo">
+            Nombre
+            <Select value={nombre || TODOS} onChange={actualizarNombre} options={[TODOS, ...nombresDisponibles]} />
+          </div>
+          <div className="filtro-campo">
             Talle
             <Select
               value={talle || TODOS}
               onChange={(v) => setTalle(v === TODOS ? '' : v)}
-              options={[TODOS, ...TALLES]}
+              options={[TODOS, ...tallesDisponibles]}
+              disabled={!hayNombre}
             />
-          </label>
-          <label className="filtro-campo">
+          </div>
+          <div className="filtro-campo">
             Color
-            <input value={color} onChange={(e) => setColor(e.target.value)} placeholder="Buscar por color" />
-          </label>
+            <Select
+              value={color || TODOS}
+              onChange={(v) => setColor(v === TODOS ? '' : v)}
+              options={[TODOS, ...coloresDisponibles]}
+              disabled={!hayNombre}
+            />
+          </div>
           <button type="button" className="btn-aplicar-filtros" onClick={aplicar}>
             Aplicar
           </button>

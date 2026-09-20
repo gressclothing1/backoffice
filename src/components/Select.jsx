@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import './Select.css';
 
-export default function Select({ value, onChange, options, placeholder = 'Elegir…' }) {
+export default function Select({ value, onChange, options, placeholder = 'Elegir…', disabled = false }) {
   const [abierto, setAbierto] = useState(false);
   const rootRef = useRef(null);
 
@@ -31,7 +31,8 @@ export default function Select({ value, onChange, options, placeholder = 'Elegir
       <button
         type="button"
         className={`custom-select-trigger ${abierto ? 'abierto' : ''}`}
-        onClick={() => setAbierto((o) => !o)}
+        onClick={() => !disabled && setAbierto((o) => !o)}
+        disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={abierto}
       >

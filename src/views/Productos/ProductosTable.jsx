@@ -1,43 +1,36 @@
 import { useRef, useState } from 'react';
-import { getProductos, updateProducto } from '../../lib/api';
-import { useFetch } from '../../hooks/useFetch';
+import { updateProducto } from '../../lib/api';
 import EliminarProductoModal from './EliminarProductoModal';
 import StockPopover from './StockPopover';
 import './ProductosTable.css';
 
-function ordenar(productos) {
-  return [...productos].sort(
-    (a, b) => a.nombre.localeCompare(b.nombre) || a.color.localeCompare(b.color) || a.talle.localeCompare(b.talle)
-  );
-}
-
-function fetchProductosOrdenados() {
-  return getProductos().then(ordenar);
-}
-
 function filtrar(productos, filtros) {
-  const producto = filtros.producto.trim().toLowerCase();
-  const color = filtros.color.trim().toLowerCase();
   return productos.filter((p) => {
-    if (producto && !`${p.categoria} ${p.nombre}`.toLowerCase().includes(producto)) return false;
+    if (filtros.categoria && p.categoria !== filtros.categoria) return false;
+    if (filtros.nombre && p.nombre !== filtros.nombre) return false;
     if (filtros.talle && p.talle !== filtros.talle) return false;
-    if (color && !p.color.toLowerCase().includes(color)) return false;
+    if (filtros.color && p.color !== filtros.color) return false;
     return true;
   });
 }
 
-export default function ProductosTable({ refreshKey, onEditar, filtros = { producto: '', talle: '', color: '' } }) {
-  const [localRefresh, setLocalRefresh] = useState(0);
+export default function ProductosTable({
+  productos,
+  loading,
+  error,
+  onEditar,
+  onCambio,
+  filtros = { categoria: '', nombre: '', talle: '', color: '' }
+}) {
   const [productoAEliminar, setProductoAEliminar] = useState(null);
   const [editandoStockId, setEditandoStockId] = useState(null);
   const [guardandoStock, setGuardandoStock] = useState(false);
   const [errorStock, setErrorStock] = useState(null);
   const anchorStockRef = useRef(null);
-  const { data: productos, error, loading } = useFetch(fetchProductosOrdenados, [refreshKey, localRefresh]);
 
   function onEliminado() {
     setProductoAEliminar(null);
-    setLocalRefresh((k) => k + 1);
+    onCambio();
   }
 
   function abrirEditorStock(producto) {
@@ -56,7 +49,7 @@ export default function ProductosTable({ refreshKey, onEditar, filtros = { produ
     try {
       await updateProducto(producto.id, { stock: nuevoStock });
       cerrarEditorStock();
-      setLocalRefresh((k) => k + 1);
+      onCambio();
     } catch (err) {
       setErrorStock(err.message);
     } finally {
@@ -79,7 +72,7 @@ export default function ProductosTable({ refreshKey, onEditar, filtros = { produ
   if (loading) return <p className="status">Cargando productos…</p>;
   if (error) return <p className="status error">Error al cargar productos: {error}</p>;
 
-  const hayFiltrosActivos = Boolean(filtros.producto || filtros.talle || filtros.color);
+  const hayFiltrosActivos = Boolean(filtros.categoria || filtros.nombre || filtros.talle || filtros.color);
   const productosFiltrados = filtrar(productos, filtros);
 
   if (!productos.length || (hayFiltrosActivos && !productosFiltrados.length)) {

@@ -1,14 +1,33 @@
 import { useState } from 'react';
+import { getProductos } from '../../lib/api';
+import { useFetch } from '../../hooks/useFetch';
 import ProductoForm from './ProductoForm';
 import ProductosTable from './ProductosTable';
 import FiltrosProductos from './FiltrosProductos';
 import './ProductosView.css';
 
+function ordenar(productos) {
+  return [...productos].sort(
+    (a, b) => a.nombre.localeCompare(b.nombre) || a.color.localeCompare(b.color) || a.talle.localeCompare(b.talle)
+  );
+}
+
+function fetchProductosOrdenados() {
+  return getProductos().then(ordenar);
+}
+
+const FILTROS_VACIOS = { categoria: '', nombre: '', talle: '', color: '' };
+
 export default function ProductosView() {
   const [mostrarForm, setMostrarForm] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [filtros, setFiltros] = useState({ producto: '', talle: '', color: '' });
+  const [filtros, setFiltros] = useState(FILTROS_VACIOS);
+  const { data: productos, error, loading } = useFetch(fetchProductosOrdenados, [refreshKey]);
+
+  function refrescar() {
+    setRefreshKey((k) => k + 1);
+  }
 
   function cerrarForm() {
     setMostrarForm(false);
@@ -16,7 +35,7 @@ export default function ProductosView() {
   }
 
   function onCreated() {
-    setRefreshKey((k) => k + 1);
+    refrescar();
     cerrarForm();
   }
 
@@ -44,9 +63,16 @@ export default function ProductosView() {
         <button type="button" className="btn-crear-producto" onClick={() => setMostrarForm(true)}>
           + Crear producto
         </button>
-        <FiltrosProductos onChange={setFiltros} />
+        <FiltrosProductos productos={productos || []} onChange={setFiltros} />
       </div>
-      <ProductosTable refreshKey={refreshKey} onEditar={editar} filtros={filtros} />
+      <ProductosTable
+        productos={productos}
+        loading={loading}
+        error={error}
+        onEditar={editar}
+        onCambio={refrescar}
+        filtros={filtros}
+      />
     </div>
   );
 }

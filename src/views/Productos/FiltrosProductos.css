@@ -50,31 +50,15 @@
   color: var(--text-h);
 }
 
-.filtro-campo input {
-  font: inherit;
-  font-size: 14px;
-  font-weight: 400;
-  padding: 7px 9px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg);
-  color: var(--text-h);
-}
-
-.filtro-campo input:focus {
-  outline: none;
-  border-color: var(--accent-border);
-}
-
 .btn-aplicar-filtros {
   font: inherit;
   font-size: 14px;
   font-weight: 500;
   padding: 8px 9px;
-  border: none;
+  border: 1px solid var(--accent-border);
   border-radius: 6px;
-  background: var(--accent);
-  color: #fff;
+  background: var(--accent-bg);
+  color: var(--accent);
   cursor: pointer;
 }
 

@@ -1,7 +1,7 @@
 .stock-popover {
   position: fixed;
   z-index: 40;
-  width: 150px;
+  width: 100px;
   padding: 10px;
   border-radius: 8px;
   background: var(--bg);
