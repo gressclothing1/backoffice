@@ -9,9 +9,11 @@
 }
 
 .tabla-vacia-titulo {
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 500;
   color: var(--text-h);
+  text-align: center;
+  line-height: 1.4;
 }
 
 .col-sticky-stock,
@@ -32,6 +34,7 @@ th.col-sticky-acciones {
 
 .col-sticky-stock {
   right: 104px;
+  border-left: 1px solid var(--border-strong);
   box-shadow: -6px 0 6px -6px rgba(0, 0, 0, 0.15);
 }
 
