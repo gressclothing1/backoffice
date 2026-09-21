@@ -70,8 +70,8 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
     <div className="modal-overlay" onClick={onCerrar}>
       <div className="modal-box modal-box-envio" onClick={(e) => e.stopPropagation()}>
         <div className="modal-box-header">
-          <h3>Envío #{envio.id.slice(0, 8)}</h3>
-          <div className="modal-box-header-acciones">
+          <div className="modal-box-header-titulo">
+            <h3>Envío #{envio.id.slice(0, 8)}</h3>
             {editando ? (
               <button type="button" className="btn-editar-envio" onClick={() => setEditando(false)}>
                 Cancelar
@@ -81,10 +81,10 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
                 Editar
               </button>
             )}
-            <button type="button" className="btn-cerrar-modal" onClick={onCerrar} aria-label="Cerrar">
-              ×
-            </button>
           </div>
+          <button type="button" className="btn-cerrar-modal" onClick={onCerrar} aria-label="Cerrar">
+            ×
+          </button>
         </div>
 
         <div className="detalle-envio-grid">

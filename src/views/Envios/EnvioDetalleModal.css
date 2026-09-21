@@ -89,10 +89,10 @@
   border-color: var(--accent-border);
 }
 
-.modal-box-header-acciones {
+.modal-box-header-titulo {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 10px;
 }
 
 .btn-editar-envio {
