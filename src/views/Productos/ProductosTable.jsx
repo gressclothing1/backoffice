@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { updateProducto } from '../../lib/api';
+import EmptyState from '../../components/EmptyState';
 import EliminarProductoModal from './EliminarProductoModal';
 import StockPopover from './StockPopover';
 import './ProductosTable.css';
@@ -108,21 +109,21 @@ export default function ProductosTable({
 
   if (!productos.length || (hayFiltrosActivos && !productosFiltrados.length)) {
     return (
-      <div className="tabla-vacia">
-        <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
-          <path
-            d="M12 26 36 14l24 12M12 26v32l24 12 24-12V26M12 26l24 12 24-12M36 38v32"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path d="M27 45 18 40.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-        </svg>
-        <p className="tabla-vacia-titulo">
-          {hayFiltrosActivos ? 'No encontramos productos con esos filtros.' : 'No encontramos productos registrados.'}
-        </p>
-      </div>
+      <EmptyState
+        icon={
+          <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+            <path
+              d="M12 26 36 14l24 12M12 26v32l24 12 24-12V26M12 26l24 12 24-12M36 38v32"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path d="M27 45 18 40.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+          </svg>
+        }
+        titulo={hayFiltrosActivos ? 'No encontramos productos con esos filtros.' : 'No encontramos productos registrados.'}
+      />
     );
   }
 

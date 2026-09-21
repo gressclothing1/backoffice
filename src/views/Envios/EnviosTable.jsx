@@ -1,5 +1,6 @@
 import { getClientes, getEnvios } from '../../lib/api';
 import { useFetch } from '../../hooks/useFetch';
+import EmptyState from '../../components/EmptyState';
 
 const ESTADO_LABELS = {
   pendiente: 'Pendiente',
@@ -33,7 +34,27 @@ export default function EnviosTable() {
 
   if (loading) return <p className="status">Cargando envíos…</p>;
   if (error) return <p className="status error">Error al cargar envíos: {error}</p>;
-  if (!envios.length) return <p className="status">Todavía no hay envíos cargados.</p>;
+  if (!envios.length) {
+    return (
+      <EmptyState
+        icon={
+          <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+            <rect x="9" y="24" width="30" height="24" rx="2" stroke="currentColor" strokeWidth="2.5" />
+            <path
+              d="M39 32h11l10 10v6H39"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <circle cx="23" cy="52" r="5.5" stroke="currentColor" strokeWidth="2.5" />
+            <circle cx="51" cy="52" r="5.5" stroke="currentColor" strokeWidth="2.5" />
+          </svg>
+        }
+        titulo="Todavía no hay envíos cargados."
+      />
+    );
+  }
 
   return (
     <div className="table-wrap">

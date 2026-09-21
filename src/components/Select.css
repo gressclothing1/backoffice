@@ -93,9 +93,18 @@
 }
 
 .custom-select-sin-resultados {
-  padding: 8px 10px;
-  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 18px 10px;
+  font-size: 13px;
   color: var(--text);
+  text-align: center;
+}
+
+.custom-select-sin-resultados svg {
+  color: var(--border-strong);
 }
 
 .custom-select-option {

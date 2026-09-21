@@ -1,12 +1,31 @@
 import { getClientes } from '../../lib/api';
 import { useFetch } from '../../hooks/useFetch';
+import EmptyState from '../../components/EmptyState';
 
 export default function ClientesTable({ refreshKey }) {
   const { data: clientes, error, loading } = useFetch(getClientes, [refreshKey]);
 
   if (loading) return <p className="status">Cargando clientes…</p>;
   if (error) return <p className="status error">Error al cargar clientes: {error}</p>;
-  if (!clientes.length) return <p className="status">Todavía no hay clientes cargados.</p>;
+  if (!clientes.length) {
+    return (
+      <EmptyState
+        icon={
+          <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+            <circle cx="36" cy="26" r="12" stroke="currentColor" strokeWidth="2.5" />
+            <path
+              d="M14 58c2-12 12-20 22-20s20 8 22 20"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        }
+        titulo="Todavía no hay clientes cargados."
+      />
+    );
+  }
 
   return (
     <div className="table-wrap">
