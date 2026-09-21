@@ -9,18 +9,18 @@
 }
 
 .btn-ver-envio {
-  font: inherit;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: var(--bg);
-  color: var(--text-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
   cursor: pointer;
 }
 
 .btn-ver-envio:hover {
-  border-color: var(--accent-border);
-  color: var(--accent);
+  background: rgba(37, 99, 235, 0.22);
 }

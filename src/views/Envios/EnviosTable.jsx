@@ -53,7 +53,7 @@ export default function EnviosTable() {
     <div className="table-wrap">
       <table className="table-envios">
         <colgroup>
-          <col style={{ width: '140px' }} />
+          <col style={{ width: '90px' }} />
           <col />
           <col />
         </colgroup>
@@ -74,8 +74,17 @@ export default function EnviosTable() {
                 <span className={`badge estado-${envio.estado}`}>{envio.estado}</span>
               </td>
               <td>
-                <button type="button" className="btn-ver-envio" onClick={() => setEnvioViendo(envio)}>
-                  Ver envío
+                <button type="button" className="btn-ver-envio" onClick={() => setEnvioViendo(envio)} aria-label="Ver envío">
+                  <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
+                    <path
+                      d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5Z"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <circle cx="8" cy="8" r="2.2" stroke="currentColor" strokeWidth="1.4" />
+                  </svg>
                 </button>
               </td>
             </tr>
