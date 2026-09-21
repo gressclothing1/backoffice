@@ -71,7 +71,7 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
       <div className="modal-box modal-box-envio" onClick={(e) => e.stopPropagation()}>
         <div className="modal-box-header">
           <div className="modal-box-header-titulo">
-            <h3>Envío #{envio.id.slice(0, 8)}</h3>
+            <h3>Envío #{String(envio.numero ?? '').padStart(3, '0')}</h3>
             {editando ? (
               <button type="button" className="btn-editar-envio" onClick={() => setEditando(false)}>
                 Volver

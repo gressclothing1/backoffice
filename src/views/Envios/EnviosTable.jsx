@@ -9,9 +9,11 @@ import './EnviosTable.css';
 function fetchEnviosConClientes() {
   return Promise.all([getEnvios(), getClientes()]).then(([envios, clientes]) => {
     const clientesPorId = new Map(clientes.map((cliente) => [cliente.id, cliente]));
-    return envios.map((envio) => ({
+    const ordenados = [...envios].sort((a, b) => new Date(a.fechaCreacion) - new Date(b.fechaCreacion));
+    return ordenados.map((envio, index) => ({
       ...envio,
-      cliente: clientesPorId.get(envio.clienteId) || null
+      cliente: clientesPorId.get(envio.clienteId) || null,
+      numero: index + 1
     }));
   });
 }
@@ -53,8 +55,8 @@ export default function EnviosTable() {
     <div className="table-wrap">
       <table className="table-envios">
         <colgroup>
-          <col style={{ width: '120px' }} />
-          <col />
+          <col style={{ width: '160px' }} />
+          <col style={{ width: '100px' }} />
           <col style={{ width: '70px' }} />
         </colgroup>
         <thead>
