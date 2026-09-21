@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { updateProducto } from '../../lib/api';
 import EmptyState from '../../components/EmptyState';
+import { useToast } from '../../components/ToastProvider';
 import EliminarProductoModal from './EliminarProductoModal';
 import StockPopover from './StockPopover';
 import './ProductosTable.css';
@@ -31,6 +32,7 @@ export default function ProductosTable({
   const [errorStock, setErrorStock] = useState(null);
   const [pagina, setPagina] = useState(1);
   const anchorStockRef = useRef(null);
+  const { showSuccess, showError } = useToast();
 
   useEffect(() => {
     setPagina(1);
@@ -57,9 +59,11 @@ export default function ProductosTable({
     try {
       await updateProducto(producto.id, { stock: nuevoStock });
       cerrarEditorStock();
+      showSuccess('Stock actualizado.');
       onCambio();
     } catch (err) {
       setErrorStock(err.message);
+      showError(err.message);
     } finally {
       setGuardandoStock(false);
     }
@@ -131,7 +135,7 @@ export default function ProductosTable({
           {productosPagina.map((producto) => (
             <tr key={producto.id}>
               {!ocultarProducto && (
-                <td>
+                <td title={`${producto.categoria} ${producto.nombre}`}>
                   {producto.categoria} {producto.nombre}
                 </td>
               )}

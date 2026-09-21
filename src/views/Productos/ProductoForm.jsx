@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createProducto, updateProducto, deleteProducto, createImagen, uploadImagen } from '../../lib/api';
 import { TALLES, CATEGORIAS } from '../../lib/constants';
 import Select from '../../components/Select';
+import { useToast } from '../../components/ToastProvider';
 import './ProductoForm.css';
 
 const MAX_IMAGENES = 6;
@@ -43,7 +44,7 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
   );
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
-  const [exito, setExito] = useState(null);
+  const { showSuccess, showError } = useToast();
 
   function cambiarModoEdicion(modo) {
     if (modo === modoEdicion || !productoEditando) return;
@@ -119,7 +120,6 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
   async function onSubmit(e) {
     e.preventDefault();
     setError(null);
-    setExito(null);
 
     if (!valores.categoria) { setError('Elegí una categoría.'); return; }
     if (!valores.material.trim()) { setError('Ingresá el material.'); return; }
@@ -200,14 +200,15 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
           (combinaciones.length === 1 &&
             combinaciones[0].talle === productoEditando.talle &&
             combinaciones[0].color === productoEditando.color));
-      setExito(
+      showSuccess(
         esSoloEdicion
           ? 'Producto actualizado.'
           : `Se ${combinaciones.length === 1 ? 'creó 1 variante' : `crearon ${combinaciones.length} variantes`}.`
       );
-      setTimeout(() => onCreated?.(), 1200);
+      onCreated?.();
     } catch (err) {
       setError(err.message);
+      showError(err.message);
     } finally {
       setEnviando(false);
     }
@@ -398,7 +399,6 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
           </button>
         )}
         {error && <span className="status error">{error}</span>}
-        {exito && !error && <span className="status success">{exito}</span>}
       </div>
     </form>
   );

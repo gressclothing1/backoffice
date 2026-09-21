@@ -225,6 +225,11 @@
   color: var(--accent);
 }
 
+.form-field .chip-list .chip {
+  background: rgba(120, 120, 130, 0.15);
+  color: var(--text-h);
+}
+
 .chip button {
   border: none;
   background: transparent;

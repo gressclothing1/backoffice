@@ -18,7 +18,7 @@
 
   @media (max-width: 640px) {
     padding: 20px 16px;
-    gap: 24px;
+    gap: 18px;
     padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
   }
 }

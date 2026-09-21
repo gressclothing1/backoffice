@@ -1,19 +1,23 @@
 import { useState } from 'react';
 import { deleteProducto } from '../../lib/api';
+import { useToast } from '../../components/ToastProvider';
 import './EliminarProductoModal.css';
 
 export default function EliminarProductoModal({ producto, variantesDelMismoNombre, onCerrar, onEliminado }) {
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
+  const { showSuccess, showError } = useToast();
 
   async function eliminarSoloEsta() {
     setEnviando(true);
     setError(null);
     try {
       await deleteProducto(producto.id);
+      showSuccess('Variante eliminada.');
       onEliminado();
     } catch (err) {
       setError(err.message);
+      showError(err.message);
       setEnviando(false);
     }
   }
@@ -23,9 +27,13 @@ export default function EliminarProductoModal({ producto, variantesDelMismoNombr
     setError(null);
     try {
       await Promise.all(variantesDelMismoNombre.map((v) => deleteProducto(v.id)));
+      showSuccess(
+        variantesDelMismoNombre.length === 1 ? 'Producto eliminado.' : `${variantesDelMismoNombre.length} variantes eliminadas.`
+      );
       onEliminado();
     } catch (err) {
       setError(err.message);
+      showError(err.message);
       setEnviando(false);
     }
   }
