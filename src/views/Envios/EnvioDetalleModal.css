@@ -25,6 +25,10 @@
   line-height: 145%;
 }
 
+.detalle-envio-grid p.detalle-envio-fecha {
+  font-weight: 600;
+}
+
 .detalle-envio-grid p.fecha-envio-valor {
   color: #2563eb;
 }

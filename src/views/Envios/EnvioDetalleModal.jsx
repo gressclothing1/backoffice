@@ -140,15 +140,19 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
 
           <div>
             <span className="detalle-envio-label">Fecha creación</span>
-            <p>{formatDate(envio.fechaCreacion)}</p>
+            <p className="detalle-envio-fecha">{formatDate(envio.fechaCreacion)}</p>
           </div>
           <div>
             <span className="detalle-envio-label">Fecha envío</span>
-            <p className={envio.fechaEnvio ? 'fecha-envio-valor' : ''}>{formatDate(envio.fechaEnvio)}</p>
+            <p className={`detalle-envio-fecha ${envio.fechaEnvio ? 'fecha-envio-valor' : ''}`}>
+              {formatDate(envio.fechaEnvio)}
+            </p>
           </div>
           <div>
             <span className="detalle-envio-label">Fecha entrega</span>
-            <p className={envio.fechaEntrega ? 'fecha-entrega-valor' : ''}>{formatDate(envio.fechaEntrega)}</p>
+            <p className={`detalle-envio-fecha ${envio.fechaEntrega ? 'fecha-entrega-valor' : ''}`}>
+              {formatDate(envio.fechaEntrega)}
+            </p>
           </div>
           <div>
             <span className="detalle-envio-label">Pagado</span>

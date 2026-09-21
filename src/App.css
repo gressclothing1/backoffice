@@ -178,6 +178,11 @@ tbody tr:hover {
   color: #16a34a;
 }
 
+.badge.estado-Cancelado {
+  background: rgba(209, 67, 91, 0.12);
+  color: #d1435b;
+}
+
 a {
   color: var(--accent);
 }
