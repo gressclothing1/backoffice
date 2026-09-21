@@ -55,7 +55,7 @@ export default function EnviosTable() {
         <colgroup>
           <col style={{ width: '120px' }} />
           <col />
-          <col />
+          <col style={{ width: '70px' }} />
         </colgroup>
         <thead>
           <tr>
