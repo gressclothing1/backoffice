@@ -24,6 +24,17 @@ function datosProducto(item) {
   };
 }
 
+function normalizarProducto(item) {
+  if (typeof item === 'string') return { nombre: item, talle: '', color: '', cantidad: '', nuevo: false };
+  return {
+    nombre: item.nombre || item.producto || item.nombreProducto || '',
+    talle: item.talle || '',
+    color: item.color || '',
+    cantidad: item.cantidad ?? item.qty ?? item.cantidadPedida ?? '',
+    nuevo: false
+  };
+}
+
 export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
   const [editando, setEditando] = useState(false);
   const [guardando, setGuardando] = useState(false);
@@ -32,6 +43,7 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
   const [linkSeguimiento, setLinkSeguimiento] = useState(envio.linkSeguimiento || '');
   const [tipoEnvio, setTipoEnvio] = useState(envio.tipoEnvio || '');
   const [comentarios, setComentarios] = useState(envio.comentarios || '');
+  const [productos, setProductos] = useState(() => (envio.productos || []).map(normalizarProducto));
   const { showSuccess, showError } = useToast();
 
   function activarEdicion() {
@@ -40,7 +52,20 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
     setLinkSeguimiento(envio.linkSeguimiento || '');
     setTipoEnvio(envio.tipoEnvio || '');
     setComentarios(envio.comentarios || '');
+    setProductos((envio.productos || []).map(normalizarProducto));
     setEditando(true);
+  }
+
+  function actualizarProducto(index, campo, valor) {
+    setProductos((p) => p.map((item, i) => (i === index ? { ...item, [campo]: valor } : item)));
+  }
+
+  function eliminarProducto(index) {
+    setProductos((p) => p.filter((_, i) => i !== index));
+  }
+
+  function agregarProducto() {
+    setProductos((p) => [...p, { nombre: '', talle: '', color: '', cantidad: '', nuevo: true }]);
   }
 
   async function guardar() {
@@ -51,7 +76,10 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
         pagado,
         linkSeguimiento: linkSeguimiento.trim() || null,
         tipoEnvio: tipoEnvio.trim() || null,
-        comentarios
+        comentarios,
+        productos: productos
+          .filter((item) => item.nombre.trim())
+          .map(({ nuevo, ...item }) => ({ ...item, cantidad: item.cantidad === '' ? 0 : Number(item.cantidad) }))
       };
       if (estado === 'Enviado' && !envio.fechaEnvio) cambios.fechaEnvio = new Date().toISOString();
       if (estado === 'Entregado' && !envio.fechaEntrega) cambios.fechaEntrega = new Date().toISOString();
@@ -74,11 +102,11 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
             <h3>Envío #{String(envio.numero ?? '').padStart(3, '0')}</h3>
             {editando ? (
               <button type="button" className="btn-editar-envio" onClick={() => setEditando(false)}>
-                Volver
+                Modo lectura
               </button>
             ) : (
               <button type="button" className="btn-editar-envio" onClick={activarEdicion}>
-                Editar
+                Modo edición
               </button>
             )}
           </div>
@@ -107,8 +135,115 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
           </div>
 
           <div className="detalle-envio-fila-completa">
-            <span className="detalle-envio-label">Pedido</span>
-            {Array.isArray(envio.productos) && envio.productos.length > 0 ? (
+            <div className="detalle-envio-pedido-header">
+              <span className="detalle-envio-label">Pedido</span>
+              {editando && (
+                <button type="button" className="btn-agregar-producto" onClick={agregarProducto} aria-label="Agregar producto">
+                  +
+                </button>
+              )}
+            </div>
+
+            {editando ? (
+              productos.length > 0 ? (
+                <table className="detalle-envio-productos-tabla">
+                  <colgroup>
+                    <col style={{ width: '110px' }} />
+                    <col />
+                    <col />
+                    <col style={{ width: '70px' }} />
+                    <col style={{ width: '34px' }} />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Talle</th>
+                      <th>Color</th>
+                      <th>Un.</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {productos.map((item, i) => (
+                      <tr key={i}>
+                        <td>
+                          {item.nuevo ? (
+                            <input
+                              type="text"
+                              className="detalle-envio-input-celda"
+                              value={item.nombre}
+                              onChange={(e) => actualizarProducto(i, 'nombre', e.target.value)}
+                              placeholder="Producto"
+                            />
+                          ) : (
+                            <TooltipTexto texto={item.nombre} />
+                          )}
+                        </td>
+                        <td>
+                          {item.nuevo ? (
+                            <input
+                              type="text"
+                              className="detalle-envio-input-celda"
+                              value={item.talle}
+                              onChange={(e) => actualizarProducto(i, 'talle', e.target.value)}
+                              placeholder="Talle"
+                            />
+                          ) : (
+                            item.talle || '—'
+                          )}
+                        </td>
+                        <td>
+                          {item.nuevo ? (
+                            <input
+                              type="text"
+                              className="detalle-envio-input-celda"
+                              value={item.color}
+                              onChange={(e) => actualizarProducto(i, 'color', e.target.value)}
+                              placeholder="Color"
+                            />
+                          ) : (
+                            item.color || '—'
+                          )}
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            className="detalle-envio-input-celda"
+                            value={item.cantidad}
+                            onChange={(e) => {
+                              const v = e.target.value;
+                              if (/^\d*$/.test(v)) actualizarProducto(i, 'cantidad', v);
+                            }}
+                            placeholder="0"
+                          />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            className="btn-eliminar-producto"
+                            onClick={() => eliminarProducto(i)}
+                            aria-label="Quitar producto"
+                          >
+                            <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                              <path
+                                d="M3 4.2h10M6.3 4.2V2.7a.6.6 0 0 1 .6-.6h2.2a.6.6 0 0 1 .6.6v1.5M4.6 4.2l.6 8.8a1 1 0 0 0 1 .9h3.6a1 1 0 0 0 1-.9l.6-8.8"
+                                stroke="currentColor"
+                                strokeWidth="1.4"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>Sin productos</p>
+              )
+            ) : Array.isArray(envio.productos) && envio.productos.length > 0 ? (
               <table className="detalle-envio-productos-tabla">
                 <colgroup>
                   <col style={{ width: '110px' }} />
