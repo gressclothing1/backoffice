@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import EnviosTable from './views/Envios/EnviosTable';
 import ProductosView from './views/Productos/ProductosView';
-import ClientesTable from './views/Clientes/ClientesTable';
 import { ToastProvider } from './components/ToastProvider';
 import './App.css';
 
 const TABS = [
   { id: 'envios', label: 'Envíos' },
-  { id: 'productos', label: 'Productos' },
-  { id: 'clientes', label: 'Clientes' }
+  { id: 'productos', label: 'Productos' }
 ];
 
 function App() {
@@ -45,13 +43,6 @@ function App() {
           {tab === 'productos' && (
             <section className="panel">
               <ProductosView />
-            </section>
-          )}
-
-          {tab === 'clientes' && (
-            <section className="panel">
-              <h2>Clientes</h2>
-              <ClientesTable />
             </section>
           )}
         </div>
