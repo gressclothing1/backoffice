@@ -17,8 +17,8 @@
 }
 
 .detalle-envio-seccion-titulo {
-  margin: 0 0 14px;
-  font-size: 18px;
+  margin: 0 0 20px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--text-h);
 }
@@ -30,12 +30,10 @@
 }
 
 .detalle-envio-pedido-seccion {
-  margin-top: 28px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border-strong);
+  margin-top: 20px;
 }
 
-.detalle-envio-grid-secundaria {
+.detalle-envio-grid-secundaria-wrap {
   margin-top: 28px;
   padding-top: 20px;
   border-top: 1px solid var(--border-strong);
