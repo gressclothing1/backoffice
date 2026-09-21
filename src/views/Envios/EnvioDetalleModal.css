@@ -20,3 +20,21 @@
 .detalle-envio-fila-completa {
   grid-column: 1 / -1;
 }
+
+.detalle-envio-comentarios {
+  box-sizing: border-box;
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-h);
+  resize: vertical;
+}
+
+.detalle-envio-comentarios:focus {
+  outline: none;
+  border-color: var(--accent-border);
+}

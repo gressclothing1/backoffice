@@ -16,15 +16,19 @@ function formatDate(value) {
 export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
   const [guardandoEstado, setGuardandoEstado] = useState(false);
   const [guardandoPagado, setGuardandoPagado] = useState(false);
+  const [comentarios, setComentarios] = useState(envio.comentarios || '');
   const { showSuccess, showError } = useToast();
 
   async function cambiarEstado(estado) {
     if (estado === envio.estado) return;
     setGuardandoEstado(true);
     try {
-      await updateEnvio(envio.id, { estado });
+      const cambios = { estado };
+      if (estado === 'Enviado' && !envio.fechaEnvio) cambios.fechaEnvio = new Date().toISOString();
+      if (estado === 'Entregado' && !envio.fechaEntrega) cambios.fechaEntrega = new Date().toISOString();
+      await updateEnvio(envio.id, cambios);
       showSuccess('Estado del envío actualizado.');
-      onActualizado?.({ ...envio, estado });
+      onActualizado?.({ ...envio, ...cambios });
     } catch (err) {
       showError(err.message);
     } finally {
@@ -44,6 +48,17 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
       showError(err.message);
     } finally {
       setGuardandoPagado(false);
+    }
+  }
+
+  async function guardarComentarios() {
+    if (comentarios === (envio.comentarios || '')) return;
+    try {
+      await updateEnvio(envio.id, { comentarios });
+      showSuccess('Comentarios actualizados.');
+      onActualizado?.({ ...envio, comentarios });
+    } catch (err) {
+      showError(err.message);
     }
   }
 
@@ -104,12 +119,17 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
               )}
             </p>
           </div>
-          {envio.comentarios && (
-            <div className="detalle-envio-fila-completa">
-              <span className="detalle-envio-label">Comentarios</span>
-              <p>{envio.comentarios}</p>
-            </div>
-          )}
+          <div className="detalle-envio-fila-completa">
+            <span className="detalle-envio-label">Comentarios</span>
+            <textarea
+              className="detalle-envio-comentarios"
+              value={comentarios}
+              onChange={(e) => setComentarios(e.target.value)}
+              onBlur={guardarComentarios}
+              placeholder="Sin comentarios"
+              rows={3}
+            />
+          </div>
         </div>
 
         <div className="modal-acciones">
