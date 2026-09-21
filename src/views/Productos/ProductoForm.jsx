@@ -203,7 +203,7 @@ export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, 
       showSuccess(
         esSoloEdicion
           ? 'Producto actualizado.'
-          : `Se ${combinaciones.length === 1 ? 'creó 1 variante' : `crearon ${combinaciones.length} variantes`}.`
+          : `Se ${combinaciones.length === 1 ? 'creó 1 variante' : `crearon ${combinaciones.length} variantes`} del producto "${base.nombre}".`
       );
       onCreated?.();
     } catch (err) {
