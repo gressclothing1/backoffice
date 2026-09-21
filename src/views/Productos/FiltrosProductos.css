@@ -19,9 +19,9 @@
 }
 
 .btn-filtrar.activo {
-  border-color: var(--accent-border);
-  background: var(--accent-bg);
-  color: var(--accent);
+  border-color: var(--filtro-border);
+  background: var(--filtro-bg);
+  color: var(--filtro);
 }
 
 .filtros-panel {
@@ -55,10 +55,10 @@
   font-size: 14px;
   font-weight: 500;
   padding: 8px 9px;
-  border: 1px solid var(--accent-border);
+  border: 1px solid var(--filtro-border);
   border-radius: 6px;
-  background: var(--accent-bg);
-  color: var(--accent);
+  background: var(--filtro-bg);
+  color: var(--filtro);
   cursor: pointer;
 }
 

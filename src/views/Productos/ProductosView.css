@@ -25,6 +25,11 @@
   margin-bottom: 16px;
 }
 
+.filtros-chips .chip {
+  background: var(--filtro-bg);
+  color: var(--filtro);
+}
+
 .chip-quitar-todos {
   font: inherit;
   font-size: 14px;
