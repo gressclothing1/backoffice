@@ -5,13 +5,6 @@ import EmptyState from '../../components/EmptyState';
 import EnvioDetalleModal from './EnvioDetalleModal';
 import './EnviosTable.css';
 
-const ESTADO_LABELS = {
-  pendiente: 'Pendiente',
-  en_transito: 'En tránsito',
-  entregado: 'Entregado',
-  cancelado: 'Cancelado'
-};
-
 function fetchEnviosConClientes() {
   return Promise.all([getEnvios(), getClientes()]).then(([envios, clientes]) => {
     const clientesPorId = new Map(clientes.map((cliente) => [cliente.id, cliente]));
@@ -23,8 +16,13 @@ function fetchEnviosConClientes() {
 }
 
 export default function EnviosTable() {
-  const { data: envios, error, loading } = useFetch(fetchEnviosConClientes, []);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const { data: envios, error, loading } = useFetch(fetchEnviosConClientes, [refreshKey]);
   const [envioViendo, setEnvioViendo] = useState(null);
+
+  function refrescar() {
+    setRefreshKey((k) => k + 1);
+  }
 
   if (loading) return <p className="status">Cargando envíos…</p>;
   if (error) return <p className="status error">Error al cargar envíos: {error}</p>;
@@ -65,9 +63,7 @@ export default function EnviosTable() {
             <tr key={envio.id}>
               <td>{envio.cliente?.nombre || 'Cliente eliminado'}</td>
               <td>
-                <span className={`badge estado-${envio.estado}`}>
-                  {ESTADO_LABELS[envio.estado] || envio.estado}
-                </span>
+                <span className={`badge estado-${envio.estado}`}>{envio.estado}</span>
               </td>
               <td>
                 <button type="button" className="btn-ver-envio" onClick={() => setEnvioViendo(envio)}>
@@ -79,7 +75,16 @@ export default function EnviosTable() {
         </tbody>
       </table>
 
-      {envioViendo && <EnvioDetalleModal envio={envioViendo} onCerrar={() => setEnvioViendo(null)} />}
+      {envioViendo && (
+        <EnvioDetalleModal
+          envio={envioViendo}
+          onCerrar={() => setEnvioViendo(null)}
+          onActualizado={(nuevoEnvio) => {
+            setEnvioViendo(nuevoEnvio);
+            refrescar();
+          }}
+        />
+      )}
     </div>
   );
 }

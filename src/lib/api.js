@@ -24,6 +24,10 @@ export function getEnvios() {
   return request('envios');
 }
 
+export function updateEnvio(id, envio) {
+  return requestJson('PATCH', `envios/${id}`, envio);
+}
+
 export function getProductos() {
   return request('productos');
 }
