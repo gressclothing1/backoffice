@@ -1,0 +1,18 @@
+.detalle-envio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.detalle-envio-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.detalle-envio-grid p {
+  margin: 0;
+  color: var(--text-h);
+}
