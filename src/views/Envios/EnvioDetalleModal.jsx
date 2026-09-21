@@ -58,7 +58,11 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
         <div className="modal-box-header">
           <h3>Envío #{envio.id.slice(0, 8)}</h3>
           <div className="modal-box-header-acciones">
-            {!editando && (
+            {editando ? (
+              <button type="button" className="btn-editar-envio" onClick={() => setEditando(false)}>
+                Cancelar
+              </button>
+            ) : (
               <button type="button" className="btn-editar-envio" onClick={activarEdicion}>
                 Editar
               </button>

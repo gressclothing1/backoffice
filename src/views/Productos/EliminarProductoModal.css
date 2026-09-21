@@ -27,7 +27,7 @@
 .modal-box p {
   font-size: 14px;
   line-height: 145%;
-  color: var(--text);
+  color: var(--text-h);
 }
 
 .modal-acciones {

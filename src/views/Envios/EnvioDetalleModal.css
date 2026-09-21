@@ -6,7 +6,7 @@
 
 .detalle-envio-label {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--text-h);
   margin-bottom: 4px;
@@ -79,8 +79,13 @@
   color: var(--accent);
 }
 
-.modal-btn-guardar {
+.modal-btn.modal-btn-guardar {
   border-color: transparent;
   background: var(--accent);
   color: #fff;
+  font-weight: 600;
+}
+
+.modal-btn.modal-btn-guardar:hover:not(:disabled) {
+  filter: brightness(0.92);
 }
