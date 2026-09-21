@@ -13,12 +13,24 @@ function formatDate(value) {
   return new Intl.DateTimeFormat('es-AR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value));
 }
 
+function describirProducto(item) {
+  if (typeof item === 'string') return item;
+  const nombre = item.nombre || item.producto || item.nombreProducto || 'Producto';
+  const detalles = [item.talle, item.color].filter(Boolean).join(' · ');
+  const cantidad = item.cantidad ?? item.qty ?? item.cantidadPedida;
+  let texto = nombre;
+  if (detalles) texto += ` (${detalles})`;
+  if (cantidad != null) texto += ` × ${cantidad}`;
+  return texto;
+}
+
 export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
   const [editando, setEditando] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [estado, setEstado] = useState(envio.estado);
   const [pagado, setPagado] = useState(envio.pagado);
   const [linkSeguimiento, setLinkSeguimiento] = useState(envio.linkSeguimiento || '');
+  const [tipoEnvio, setTipoEnvio] = useState(envio.tipoEnvio || '');
   const [comentarios, setComentarios] = useState(envio.comentarios || '');
   const { showSuccess, showError } = useToast();
 
@@ -26,6 +38,7 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
     setEstado(envio.estado);
     setPagado(envio.pagado);
     setLinkSeguimiento(envio.linkSeguimiento || '');
+    setTipoEnvio(envio.tipoEnvio || '');
     setComentarios(envio.comentarios || '');
     setEditando(true);
   }
@@ -37,6 +50,7 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
         estado,
         pagado,
         linkSeguimiento: linkSeguimiento.trim() || null,
+        tipoEnvio: tipoEnvio.trim() || null,
         comentarios
       };
       if (estado === 'Enviado' && !envio.fechaEnvio) cambios.fechaEnvio = new Date().toISOString();
@@ -92,17 +106,49 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
             <p>{envio.destino || '—'}</p>
           </div>
 
+          <div className="detalle-envio-fila-completa">
+            <span className="detalle-envio-label">Productos</span>
+            {Array.isArray(envio.productos) && envio.productos.length > 0 ? (
+              <ul className="detalle-envio-productos-lista">
+                {envio.productos.map((item, i) => (
+                  <li key={i}>{describirProducto(item)}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>Sin productos</p>
+            )}
+          </div>
+
+          <div>
+            <span className="detalle-envio-label">Código postal</span>
+            <p>{envio.cliente?.codigoPostal || '—'}</p>
+          </div>
+          <div>
+            <span className="detalle-envio-label">Tipo de envío</span>
+            {editando ? (
+              <input
+                type="text"
+                className="detalle-envio-input"
+                value={tipoEnvio}
+                onChange={(e) => setTipoEnvio(e.target.value)}
+                placeholder="Ej: Correo, Moto…"
+              />
+            ) : (
+              <p>{envio.tipoEnvio || '—'}</p>
+            )}
+          </div>
+
           <div>
             <span className="detalle-envio-label">Fecha creación</span>
             <p>{formatDate(envio.fechaCreacion)}</p>
           </div>
           <div>
             <span className="detalle-envio-label">Fecha envío</span>
-            <p>{formatDate(envio.fechaEnvio)}</p>
+            <p className={envio.fechaEnvio ? 'fecha-envio-valor' : ''}>{formatDate(envio.fechaEnvio)}</p>
           </div>
           <div>
             <span className="detalle-envio-label">Fecha entrega</span>
-            <p>{formatDate(envio.fechaEntrega)}</p>
+            <p className={envio.fechaEntrega ? 'fecha-entrega-valor' : ''}>{formatDate(envio.fechaEntrega)}</p>
           </div>
           <div>
             <span className="detalle-envio-label">Pagado</span>

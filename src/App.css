@@ -168,6 +168,16 @@ tbody tr:hover {
   color: #d1435b;
 }
 
+.badge.estado-Enviado {
+  background: rgba(37, 99, 235, 0.12);
+  color: #2563eb;
+}
+
+.badge.estado-Entregado {
+  background: rgba(34, 197, 94, 0.15);
+  color: #16a34a;
+}
+
 a {
   color: var(--accent);
 }
