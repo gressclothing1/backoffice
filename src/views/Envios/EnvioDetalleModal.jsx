@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { updateEnvio } from '../../lib/api';
 import { ESTADOS_ENVIO } from '../../lib/constants';
 import Select from '../../components/Select';
+import TooltipTexto from '../../components/TooltipTexto';
 import { useToast } from '../../components/ToastProvider';
 import '../../components/Modal.css';
 import './EnvioDetalleModal.css';
@@ -73,7 +74,7 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
             <h3>Envío #{envio.id.slice(0, 8)}</h3>
             {editando ? (
               <button type="button" className="btn-editar-envio" onClick={() => setEditando(false)}>
-                Cancelar
+                Volver
               </button>
             ) : (
               <button type="button" className="btn-editar-envio" onClick={activarEdicion}>
@@ -106,9 +107,15 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
           </div>
 
           <div className="detalle-envio-fila-completa">
-            <span className="detalle-envio-label">Productos</span>
+            <span className="detalle-envio-label">Pedido</span>
             {Array.isArray(envio.productos) && envio.productos.length > 0 ? (
               <table className="detalle-envio-productos-tabla">
+                <colgroup>
+                  <col style={{ width: '110px' }} />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
                 <thead>
                   <tr>
                     <th>Producto</th>
@@ -122,7 +129,9 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
                     const p = datosProducto(item);
                     return (
                       <tr key={i}>
-                        <td>{p.nombre}</td>
+                        <td>
+                          <TooltipTexto texto={p.nombre} />
+                        </td>
                         <td>{p.talle}</td>
                         <td>{p.color}</td>
                         <td>{p.unidades}</td>

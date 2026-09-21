@@ -16,6 +16,7 @@
 
 .detalle-envio-productos-tabla {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
   font-size: 13px;
 }
@@ -26,6 +27,7 @@
   padding: 6px 8px;
   border-bottom: 1px solid var(--border);
   color: var(--text-h);
+  overflow: hidden;
 }
 
 .detalle-envio-productos-tabla th {
