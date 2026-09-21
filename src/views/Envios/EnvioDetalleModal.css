@@ -14,15 +14,28 @@
   overflow-y: scroll;
 }
 
-.detalle-envio-productos-lista {
-  margin: 0;
-  padding-left: 18px;
+.detalle-envio-productos-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.detalle-envio-productos-tabla th,
+.detalle-envio-productos-tabla td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
   color: var(--text-h);
 }
 
-.detalle-envio-productos-lista li {
-  font-size: 14px;
-  line-height: 145%;
+.detalle-envio-productos-tabla th {
+  font-weight: 500;
+  color: var(--text);
+  background: var(--code-bg);
+}
+
+.detalle-envio-productos-tabla tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .detalle-envio-grid p.detalle-envio-fecha {
@@ -99,7 +112,7 @@
   font: inherit;
   font-size: 14px;
   font-weight: 500;
-  padding: 6px 12px;
+  padding: 2px 10px;
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--bg);

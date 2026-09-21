@@ -22,7 +22,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 22px;
 }
 
 .modal-box-header h3 {
@@ -47,7 +47,7 @@
   border-radius: 8px;
   background: transparent;
   color: var(--text);
-  font-size: 22px;
+  font-size: 28px;
   line-height: 1;
   cursor: pointer;
 }

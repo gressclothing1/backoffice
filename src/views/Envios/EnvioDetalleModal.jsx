@@ -13,15 +13,14 @@ function formatDate(value) {
   return new Intl.DateTimeFormat('es-AR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value));
 }
 
-function describirProducto(item) {
-  if (typeof item === 'string') return item;
-  const nombre = item.nombre || item.producto || item.nombreProducto || 'Producto';
-  const detalles = [item.talle, item.color].filter(Boolean).join(' · ');
-  const cantidad = item.cantidad ?? item.qty ?? item.cantidadPedida;
-  let texto = nombre;
-  if (detalles) texto += ` (${detalles})`;
-  if (cantidad != null) texto += ` × ${cantidad}`;
-  return texto;
+function datosProducto(item) {
+  if (typeof item === 'string') return { nombre: item, talle: '—', color: '—', unidades: '—' };
+  return {
+    nombre: item.nombre || item.producto || item.nombreProducto || 'Producto',
+    talle: item.talle || '—',
+    color: item.color || '—',
+    unidades: item.cantidad ?? item.qty ?? item.cantidadPedida ?? '—'
+  };
 }
 
 export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
@@ -109,11 +108,29 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
           <div className="detalle-envio-fila-completa">
             <span className="detalle-envio-label">Productos</span>
             {Array.isArray(envio.productos) && envio.productos.length > 0 ? (
-              <ul className="detalle-envio-productos-lista">
-                {envio.productos.map((item, i) => (
-                  <li key={i}>{describirProducto(item)}</li>
-                ))}
-              </ul>
+              <table className="detalle-envio-productos-tabla">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th>Talle</th>
+                    <th>Color</th>
+                    <th>Un.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {envio.productos.map((item, i) => {
+                    const p = datosProducto(item);
+                    return (
+                      <tr key={i}>
+                        <td>{p.nombre}</td>
+                        <td>{p.talle}</td>
+                        <td>{p.color}</td>
+                        <td>{p.unidades}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             ) : (
               <p>Sin productos</p>
             )}
