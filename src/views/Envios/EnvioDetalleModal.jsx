@@ -150,43 +150,6 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
               <p>{envio.cliente?.nombre || 'Cliente eliminado'}</p>
             </div>
 
-            <div className="detalle-envio-fila-completa">
-              <span className="detalle-envio-label">Destino</span>
-              <p>{envio.destino || '—'}</p>
-            </div>
-
-            <div>
-              <span className="detalle-envio-label">Fecha envío</span>
-              <p className={`detalle-envio-fecha ${envio.fechaEnvio ? 'fecha-envio-valor' : ''}`}>
-                {formatDate(envio.fechaEnvio)}
-              </p>
-            </div>
-            <div>
-              <span className="detalle-envio-label">Fecha entrega</span>
-              <p className={`detalle-envio-fecha ${envio.fechaEntrega ? 'fecha-entrega-valor' : ''}`}>
-                {formatDate(envio.fechaEntrega)}
-              </p>
-            </div>
-
-            <div>
-              <span className="detalle-envio-label">Código postal</span>
-              <p>{envio.cliente?.codigoPostal || '—'}</p>
-            </div>
-            <div>
-              <span className="detalle-envio-label">Tipo de envío</span>
-              {editando ? (
-                <input
-                  type="text"
-                  className="detalle-envio-input"
-                  value={tipoEnvio}
-                  onChange={(e) => setTipoEnvio(e.target.value)}
-                  placeholder="Ej: Correo, Moto…"
-                />
-              ) : (
-                <p>{envio.tipoEnvio || '—'}</p>
-              )}
-            </div>
-
             <div>
               <span className="detalle-envio-label">Estado</span>
               {editando ? (
@@ -201,42 +164,6 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
                 <Select value={pagado ? 'Sí' : 'No'} onChange={(v) => setPagado(v === 'Sí')} options={OPCIONES_PAGADO} />
               ) : (
                 <span className={`badge ${envio.pagado ? 'pagado-si' : 'pagado-no'}`}>{envio.pagado ? 'Sí' : 'No'}</span>
-              )}
-            </div>
-
-            <div className="detalle-envio-fila-completa">
-              <span className="detalle-envio-label">Link de seguimiento</span>
-              {editando ? (
-                <input
-                  type="text"
-                  className="detalle-envio-input"
-                  value={linkSeguimiento}
-                  onChange={(e) => setLinkSeguimiento(e.target.value)}
-                  placeholder="https://…"
-                />
-              ) : envio.linkSeguimiento ? (
-                <p>
-                  <a href={envio.linkSeguimiento} target="_blank" rel="noreferrer">
-                    Ver link
-                  </a>
-                </p>
-              ) : (
-                <p>—</p>
-              )}
-            </div>
-
-            <div className="detalle-envio-fila-completa">
-              <span className="detalle-envio-label">Comentarios</span>
-              {editando ? (
-                <textarea
-                  className="detalle-envio-comentarios"
-                  value={comentarios}
-                  onChange={(e) => setComentarios(e.target.value)}
-                  placeholder="Sin comentarios"
-                  rows={3}
-                />
-              ) : (
-                <p>{envio.comentarios || '—'}</p>
               )}
             </div>
           </div>
@@ -385,6 +312,81 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
             ) : (
               <p>Sin productos</p>
             )}
+          </div>
+
+          <div className="detalle-envio-grid detalle-envio-grid-secundaria">
+            <div className="detalle-envio-fila-completa">
+              <span className="detalle-envio-label">Destino</span>
+              <p>{envio.destino || '—'}</p>
+            </div>
+
+            <div>
+              <span className="detalle-envio-label">Fecha envío</span>
+              <p className={`detalle-envio-fecha ${envio.fechaEnvio ? 'fecha-envio-valor' : ''}`}>
+                {formatDate(envio.fechaEnvio)}
+              </p>
+            </div>
+            <div>
+              <span className="detalle-envio-label">Fecha entrega</span>
+              <p className={`detalle-envio-fecha ${envio.fechaEntrega ? 'fecha-entrega-valor' : ''}`}>
+                {formatDate(envio.fechaEntrega)}
+              </p>
+            </div>
+
+            <div>
+              <span className="detalle-envio-label">Código postal</span>
+              <p>{envio.cliente?.codigoPostal || '—'}</p>
+            </div>
+            <div>
+              <span className="detalle-envio-label">Tipo de envío</span>
+              {editando ? (
+                <input
+                  type="text"
+                  className="detalle-envio-input"
+                  value={tipoEnvio}
+                  onChange={(e) => setTipoEnvio(e.target.value)}
+                  placeholder="Ej: Correo, Moto…"
+                />
+              ) : (
+                <p>{envio.tipoEnvio || '—'}</p>
+              )}
+            </div>
+
+            <div className="detalle-envio-fila-completa">
+              <span className="detalle-envio-label">Link de seguimiento</span>
+              {editando ? (
+                <input
+                  type="text"
+                  className="detalle-envio-input"
+                  value={linkSeguimiento}
+                  onChange={(e) => setLinkSeguimiento(e.target.value)}
+                  placeholder="https://…"
+                />
+              ) : envio.linkSeguimiento ? (
+                <p>
+                  <a href={envio.linkSeguimiento} target="_blank" rel="noreferrer">
+                    Ver link
+                  </a>
+                </p>
+              ) : (
+                <p>—</p>
+              )}
+            </div>
+
+            <div className="detalle-envio-fila-completa">
+              <span className="detalle-envio-label">Comentarios</span>
+              {editando ? (
+                <textarea
+                  className="detalle-envio-comentarios"
+                  value={comentarios}
+                  onChange={(e) => setComentarios(e.target.value)}
+                  placeholder="Sin comentarios"
+                  rows={3}
+                />
+              ) : (
+                <p>{envio.comentarios || '—'}</p>
+              )}
+            </div>
           </div>
         </div>
 
