@@ -35,9 +35,7 @@ function App() {
 
           {tab === 'envios' && (
             <section className="panel">
-              <div className="panel-header">
-                <h2>Envíos</h2>
-              </div>
+              <h2>Envíos</h2>
               <EnviosTable />
             </section>
           )}
