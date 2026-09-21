@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { getProductos, getComponentes } from '../../lib/api';
+import { getProductos } from '../../lib/api';
 import { useFetch } from '../../hooks/useFetch';
 import ProductoForm from './ProductoForm';
 import ProductosTable from './ProductosTable';
@@ -16,13 +16,6 @@ function fetchProductosOrdenados() {
   return getProductos().then(ordenar);
 }
 
-function fetchTodo() {
-  return Promise.all([getProductos().then(ordenar), getComponentes()]).then(([productos, componentes]) => ({
-    productos,
-    componentes
-  }));
-}
-
 const FILTROS_VACIOS = { categoria: '', nombre: '', talle: '', color: '' };
 
 export default function ProductosView() {
@@ -31,9 +24,7 @@ export default function ProductosView() {
   const [variantesDelProducto, setVariantesDelProducto] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
   const [filtros, setFiltros] = useState(FILTROS_VACIOS);
-  const { data, error, loading } = useFetch(fetchTodo, [refreshKey]);
-  const productos = data?.productos;
-  const componentes = data?.componentes || [];
+  const { data: productos, error, loading } = useFetch(fetchProductosOrdenados, [refreshKey]);
 
   function refrescar() {
     setRefreshKey((k) => k + 1);
@@ -76,7 +67,6 @@ export default function ProductosView() {
         titulo={productoEditando ? 'Editar producto' : 'Nuevo producto'}
         productoEditando={productoEditando}
         variantesDelProducto={variantesDelProducto}
-        productos={productos || []}
         onCerrar={cerrarForm}
         onCreated={onCreated}
         onCancelar={cerrarForm}
@@ -136,7 +126,6 @@ export default function ProductosView() {
 
       <ProductosTable
         productos={productos}
-        componentes={componentes}
         loading={loading}
         error={error}
         onEditar={editar}

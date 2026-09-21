@@ -48,18 +48,6 @@ export function createImagen(imagen) {
   return requestJson('POST', 'imagenes', imagen);
 }
 
-export function getComponentes() {
-  return request('componentes');
-}
-
-export function createComponente(componente) {
-  return requestJson('POST', 'componentes', componente);
-}
-
-export function deleteComponente(id) {
-  return request(`componentes/${id}`, { method: 'DELETE' });
-}
-
 export async function uploadImagen(file) {
   const formData = new FormData();
   formData.append('file', file);

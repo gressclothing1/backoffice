@@ -1,14 +1,5 @@
-import { useEffect, useState } from 'react';
-import {
-  createProducto,
-  updateProducto,
-  deleteProducto,
-  createImagen,
-  uploadImagen,
-  getComponentes,
-  createComponente,
-  deleteComponente
-} from '../../lib/api';
+import { useState } from 'react';
+import { createProducto, updateProducto, deleteProducto, createImagen, uploadImagen } from '../../lib/api';
 import { TALLES, CATEGORIAS } from '../../lib/constants';
 import Select from '../../components/Select';
 import './ProductoForm.css';
@@ -38,15 +29,7 @@ function datosParaModo(productoEditando, variantesDelProducto, modo) {
   return { talles: tallesUnicos, medidas, colores: coloresUnicos, imagenes: Object.fromEntries(coloresUnicos.map((c) => [c, []])) };
 }
 
-export default function ProductoForm({
-  onCreated,
-  onCancelar,
-  titulo,
-  onCerrar,
-  productoEditando,
-  variantesDelProducto = [],
-  productos = []
-}) {
+export default function ProductoForm({ onCreated, onCancelar, titulo, onCerrar, productoEditando, variantesDelProducto = [] }) {
   const [modoEdicion, setModoEdicion] = useState('producto');
   const [valores, setValores] = useState(() => (productoEditando ? valoresDeVariante(productoEditando) : VACIO));
   const [talles, setTalles] = useState(() => datosParaModo(productoEditando, variantesDelProducto, 'producto').talles);
@@ -58,74 +41,9 @@ export default function ProductoForm({
   const [imagenesPorColor, setImagenesPorColor] = useState(
     () => datosParaModo(productoEditando, variantesDelProducto, 'producto').imagenes
   );
-  const [productosSeleccionados, setProductosSeleccionados] = useState([]);
-  const [componentesExistentes, setComponentesExistentes] = useState([]);
-  const [errorConjunto, setErrorConjunto] = useState(null);
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState(null);
   const [exito, setExito] = useState(null);
-
-  const conjuntoBloqueado = valores.categoria === 'Conjunto';
-
-  useEffect(() => {
-    if (!productoEditando || productoEditando.categoria !== 'Conjunto') return;
-    getComponentes()
-      .then((lista) => {
-        setComponentesExistentes(lista);
-        setProductosSeleccionados(
-          lista.filter((c) => c.conjuntoNombre === productoEditando.nombre).map((c) => c.productoNombre)
-        );
-      })
-      .catch(() => {});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!conjuntoBloqueado) {
-      setErrorConjunto(null);
-      return;
-    }
-    if (productosSeleccionados.length < 2) {
-      setErrorConjunto(null);
-      return;
-    }
-    const grupos = productosSeleccionados.map((nombre) => productos.filter((p) => p.nombre === nombre));
-    if (grupos.some((g) => g.length === 0)) return;
-
-    const materiales = new Set(grupos.map((g) => g[0].material));
-    const tallesPorProducto = grupos.map((g) => [...new Set(g.map((p) => p.talle))].sort().join('|'));
-    const coloresPorProducto = grupos.map((g) => [...new Set(g.map((p) => p.color))].sort().join('|'));
-
-    if (materiales.size > 1 || new Set(tallesPorProducto).size > 1 || new Set(coloresPorProducto).size > 1) {
-      setErrorConjunto('Los productos elegidos deben tener el mismo material, los mismos talles y los mismos colores.');
-      return;
-    }
-
-    setErrorConjunto(null);
-    const base = grupos[0];
-    const tallesUnicos = [...new Set(base.map((p) => p.talle))];
-    const coloresUnicos = [...new Set(base.map((p) => p.color))];
-    const medidas = {};
-    base.forEach((p) => { medidas[p.talle] = p.medidas; });
-    setValores((v) => ({ ...v, material: base[0].material }));
-    setTalles(tallesUnicos);
-    setMedidasPorTalle(medidas);
-    setColores(coloresUnicos);
-    setImagenesPorColor(Object.fromEntries(coloresUnicos.map((c) => [c, []])));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productosSeleccionados, conjuntoBloqueado]);
-
-  function agregarProductoConjunto(nombre) {
-    setProductosSeleccionados((p) => (p.includes(nombre) ? p : [...p, nombre]));
-  }
-
-  function quitarProductoConjunto(nombre) {
-    setProductosSeleccionados((p) => p.filter((n) => n !== nombre));
-  }
-
-  const nombresDisponiblesParaConjunto = [...new Set(productos.filter((p) => p.categoria !== 'Conjunto').map((p) => p.nombre))]
-    .filter((nombre) => nombre !== valores.nombre.trim() && !productosSeleccionados.includes(nombre))
-    .sort();
 
   function cambiarModoEdicion(modo) {
     if (modo === modoEdicion || !productoEditando) return;
@@ -204,10 +122,6 @@ export default function ProductoForm({
     setExito(null);
 
     if (!valores.categoria) { setError('Elegí una categoría.'); return; }
-    if (conjuntoBloqueado) {
-      if (productosSeleccionados.length < 2) { setError('Seleccioná al menos 2 productos para el conjunto.'); return; }
-      if (errorConjunto) { setError(errorConjunto); return; }
-    }
     if (!valores.material.trim()) { setError('Ingresá el material.'); return; }
     if (talles.length === 0) { setError('Elegí al menos un talle.'); return; }
     if (colores.length === 0) { setError('Agregá al menos un color.'); return; }
@@ -224,21 +138,8 @@ export default function ProductoForm({
         material: valores.material.trim(),
         stock: 0
       };
-      function stockHeredado(talle, color) {
-        const stocks = productosSeleccionados.map((nombre) => {
-          const variante = productos.find((p) => p.nombre === nombre && p.talle === talle && p.color === color);
-          return variante ? variante.stock : 0;
-        });
-        return stocks.length ? Math.min(...stocks) : 0;
-      }
       const combinaciones = talles.flatMap((talle) =>
-        colores.map((color) => ({
-          ...base,
-          talle,
-          medidas: medidasPorTalle[talle].trim(),
-          color,
-          ...(conjuntoBloqueado ? { stock: stockHeredado(talle, color) } : {})
-        }))
+        colores.map((color) => ({ ...base, talle, medidas: medidasPorTalle[talle].trim(), color }))
       );
 
       let productosCreados;
@@ -287,25 +188,10 @@ export default function ProductoForm({
         await Promise.all(registrosImagenes.map((imagen) => createImagen(imagen)));
       }
 
-      const viejosComponentes = productoEditando
-        ? componentesExistentes.filter((c) => c.conjuntoNombre === productoEditando.nombre)
-        : [];
-      if (conjuntoBloqueado) {
-        await Promise.all(viejosComponentes.map((c) => deleteComponente(c.id)));
-        await Promise.all(
-          productosSeleccionados.map((productoNombre) =>
-            createComponente({ conjuntoNombre: valores.nombre.trim(), productoNombre })
-          )
-        );
-      } else if (viejosComponentes.length > 0) {
-        await Promise.all(viejosComponentes.map((c) => deleteComponente(c.id)));
-      }
-
       setValores(VACIO);
       setTalles([]);
       setMedidasPorTalle({});
       setColores([]);
-      setProductosSeleccionados([]);
       Object.values(imagenesPorColor).flat().forEach((imagen) => URL.revokeObjectURL(imagen.previewUrl));
       setImagenesPorColor({});
       const esSoloEdicion =
@@ -369,31 +255,6 @@ export default function ProductoForm({
               required
             />
           </label>
-          {conjuntoBloqueado && (
-            <div className="field">
-              Productos
-              <Select
-                value=""
-                onChange={agregarProductoConjunto}
-                options={nombresDisponiblesParaConjunto}
-                placeholder="Agregar producto…"
-                searchable
-              />
-              {productosSeleccionados.length > 0 && (
-                <div className="chip-list">
-                  {productosSeleccionados.map((nombre) => (
-                    <span className="chip" key={nombre}>
-                      {nombre}
-                      <button type="button" onClick={() => quitarProductoConjunto(nombre)} aria-label={`Quitar ${nombre}`}>
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              )}
-              {errorConjunto && <span className="status error">{errorConjunto}</span>}
-            </div>
-          )}
           <div className="field">
             Categoría
             <Select
@@ -407,7 +268,6 @@ export default function ProductoForm({
             <input
               value={valores.material}
               onChange={(e) => actualizarCampo('material', e.target.value)}
-              disabled={conjuntoBloqueado}
               required
             />
           </label>
@@ -423,7 +283,6 @@ export default function ProductoForm({
               key={talle}
               className={`chip-toggle ${talles.includes(talle) ? 'activo' : ''}`}
               onClick={() => toggleTalle(talle)}
-              disabled={conjuntoBloqueado}
             >
               {talle}
             </button>
@@ -453,9 +312,8 @@ export default function ProductoForm({
             onChange={(e) => setColorInput(e.target.value)}
             onKeyDown={onColorKeyDown}
             placeholder="Escribí un color y presioná Enter"
-            disabled={conjuntoBloqueado}
           />
-          <button type="button" onClick={agregarColor} disabled={conjuntoBloqueado}>
+          <button type="button" onClick={agregarColor}>
             Agregar
           </button>
         </div>
@@ -464,12 +322,7 @@ export default function ProductoForm({
             {colores.map((color) => (
               <span className="chip" key={color}>
                 {color}
-                <button
-                  type="button"
-                  onClick={() => quitarColor(color)}
-                  aria-label={`Quitar ${color}`}
-                  disabled={conjuntoBloqueado}
-                >
+                <button type="button" onClick={() => quitarColor(color)} aria-label={`Quitar ${color}`}>
                   ×
                 </button>
               </span>
@@ -534,8 +387,7 @@ export default function ProductoForm({
             !valores.categoria ||
             !valores.material.trim() ||
             talles.length === 0 ||
-            colores.length === 0 ||
-            (conjuntoBloqueado && (productosSeleccionados.length < 2 || Boolean(errorConjunto)))
+            colores.length === 0
           }
         >
           {enviando ? (productoEditando ? 'Guardando…' : 'Creando…') : productoEditando ? 'Guardar cambios' : 'Crear producto'}

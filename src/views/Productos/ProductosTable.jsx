@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { updateProducto } from '../../lib/api';
 import EmptyState from '../../components/EmptyState';
 import EliminarProductoModal from './EliminarProductoModal';
@@ -23,7 +23,6 @@ export default function ProductosTable({
   error,
   onEditar,
   onCambio,
-  componentes = [],
   filtros = { categoria: '', nombre: '', talle: '', color: '' }
 }) {
   const [productoAEliminar, setProductoAEliminar] = useState(null);
@@ -36,25 +35,6 @@ export default function ProductosTable({
   useEffect(() => {
     setPagina(1);
   }, [filtros]);
-
-  const componentesPorConjunto = useMemo(() => {
-    const mapa = {};
-    componentes.forEach((c) => {
-      (mapa[c.conjuntoNombre] ||= []).push(c.productoNombre);
-    });
-    return mapa;
-  }, [componentes]);
-
-  function stockMostrado(producto) {
-    if (producto.categoria !== 'Conjunto') return producto.stock;
-    const nombresComponentes = componentesPorConjunto[producto.nombre] || [];
-    if (nombresComponentes.length === 0) return producto.stock;
-    const stocks = nombresComponentes.map((nombre) => {
-      const variante = productos.find((p) => p.nombre === nombre && p.talle === producto.talle && p.color === producto.color);
-      return variante ? variante.stock : 0;
-    });
-    return Math.min(...stocks);
-  }
 
   function onEliminado() {
     setProductoAEliminar(null);
@@ -161,20 +141,18 @@ export default function ProductosTable({
               <td>{producto.color}</td>
               <td className="col-sticky-stock">
                 <div className="stock-celda">
-                  <span ref={producto.id === editandoStockId ? anchorStockRef : undefined}>{stockMostrado(producto)}</span>
-                  {producto.categoria !== 'Conjunto' && (
-                    <button
-                      type="button"
-                      className="btn-icono-mini"
-                      onClick={() => abrirEditorStock(producto)}
-                      aria-label="Editar stock"
-                    >
-                      <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
-                        <path d="M4 5.5h5M6.5 3v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                        <path d="M4 12h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                      </svg>
-                    </button>
-                  )}
+                  <span ref={producto.id === editandoStockId ? anchorStockRef : undefined}>{producto.stock}</span>
+                  <button
+                    type="button"
+                    className="btn-icono-mini"
+                    onClick={() => abrirEditorStock(producto)}
+                    aria-label="Editar stock"
+                  >
+                    <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
+                      <path d="M4 5.5h5M6.5 3v5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      <path d="M4 12h5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    </svg>
+                  </button>
                 </div>
                 {editandoStockId === producto.id && (
                   <StockPopover
