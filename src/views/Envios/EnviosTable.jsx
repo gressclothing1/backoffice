@@ -53,7 +53,7 @@ export default function EnviosTable() {
     <div className="table-wrap">
       <table className="table-envios">
         <colgroup>
-          <col style={{ width: '90px' }} />
+          <col style={{ width: '120px' }} />
           <col />
           <col />
         </colgroup>
