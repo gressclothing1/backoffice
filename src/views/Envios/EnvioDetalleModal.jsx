@@ -10,7 +10,7 @@ const OPCIONES_PAGADO = ['Sí', 'No'];
 
 function formatDate(value) {
   if (!value) return '—';
-  return new Intl.DateTimeFormat('es-AR', { dateStyle: 'short' }).format(new Date(value));
+  return new Intl.DateTimeFormat('es-AR', { dateStyle: 'short', timeStyle: 'short' }).format(new Date(value));
 }
 
 export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
@@ -54,7 +54,7 @@ export default function EnvioDetalleModal({ envio, onCerrar, onActualizado }) {
 
   return (
     <div className="modal-overlay" onClick={onCerrar}>
-      <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-box modal-box-envio" onClick={(e) => e.stopPropagation()}>
         <div className="modal-box-header">
           <h3>Envío #{envio.id.slice(0, 8)}</h3>
           <div className="modal-box-header-acciones">
