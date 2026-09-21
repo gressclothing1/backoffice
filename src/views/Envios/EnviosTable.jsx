@@ -50,7 +50,12 @@ export default function EnviosTable() {
 
   return (
     <div className="table-wrap">
-      <table>
+      <table className="table-envios">
+        <colgroup>
+          <col style={{ width: '140px' }} />
+          <col />
+          <col />
+        </colgroup>
         <thead>
           <tr>
             <th>Cliente</th>
@@ -61,7 +66,7 @@ export default function EnviosTable() {
         <tbody>
           {envios.map((envio) => (
             <tr key={envio.id}>
-              <td>{envio.cliente?.nombre || 'Cliente eliminado'}</td>
+              <td title={envio.cliente?.nombre || 'Cliente eliminado'}>{envio.cliente?.nombre || 'Cliente eliminado'}</td>
               <td>
                 <span className={`badge estado-${envio.estado}`}>{envio.estado}</span>
               </td>

@@ -1,3 +1,13 @@
+.table-envios {
+  table-layout: fixed;
+}
+
+.table-envios td,
+.table-envios th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .btn-ver-envio {
   font: inherit;
   font-size: 14px;
