@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { getClientes, getEnvios } from '../../lib/api';
 import { useFetch } from '../../hooks/useFetch';
 import EmptyState from '../../components/EmptyState';
+import TooltipTexto from '../../components/TooltipTexto';
 import EnvioDetalleModal from './EnvioDetalleModal';
 import './EnviosTable.css';
 
@@ -66,7 +67,9 @@ export default function EnviosTable() {
         <tbody>
           {envios.map((envio) => (
             <tr key={envio.id}>
-              <td title={envio.cliente?.nombre || 'Cliente eliminado'}>{envio.cliente?.nombre || 'Cliente eliminado'}</td>
+              <td>
+                <TooltipTexto texto={envio.cliente?.nombre || 'Cliente eliminado'} />
+              </td>
               <td>
                 <span className={`badge estado-${envio.estado}`}>{envio.estado}</span>
               </td>

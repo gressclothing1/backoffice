@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { updateProducto } from '../../lib/api';
 import EmptyState from '../../components/EmptyState';
 import { useToast } from '../../components/ToastProvider';
+import TooltipTexto from '../../components/TooltipTexto';
 import EliminarProductoModal from './EliminarProductoModal';
 import StockPopover from './StockPopover';
 import './ProductosTable.css';
@@ -135,8 +136,8 @@ export default function ProductosTable({
           {productosPagina.map((producto) => (
             <tr key={producto.id}>
               {!ocultarProducto && (
-                <td title={`${producto.categoria} ${producto.nombre}`}>
-                  {producto.categoria} {producto.nombre}
+                <td>
+                  <TooltipTexto texto={`${producto.categoria} ${producto.nombre}`} />
                 </td>
               )}
               <td>

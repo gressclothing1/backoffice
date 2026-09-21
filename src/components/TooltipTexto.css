@@ -1,0 +1,22 @@
+.tooltip-texto-trigger {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tooltip-texto-popover {
+  position: fixed;
+  z-index: 40;
+  max-width: 260px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--text-h);
+  color: var(--bg);
+  font-size: 13px;
+  line-height: 140%;
+  word-break: break-word;
+  box-shadow: var(--shadow);
+}

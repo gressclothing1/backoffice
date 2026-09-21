@@ -1,7 +1,7 @@
 .detalle-envio-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 24px 14px;
 }
 
 .detalle-envio-label {
